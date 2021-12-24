@@ -4,7 +4,6 @@
     "lib": ["dom", "dom.iterable", "esnext"],
     "allowJs": true,
     "skipLibCheck": true,
-    "strict": true,
     "forceConsistentCasingInFileNames": true,
     "noEmit": true,
     "esModuleInterop": true,
@@ -13,7 +12,21 @@
     "resolveJsonModule": true,
     "isolatedModules": true,
     "jsx": "preserve",
-    "incremental": true
+    "incremental": true,
+
+    // Type Checking (https://www.typescriptlang.org/tsconfig#Type_Checking_6248)
+    "allowUnreachableCode": false, // compiler errors about unreachable code.
+    "allowUnusedLabels": false, // compiler errors about unused labels.
+    "alwaysStrict": true, // Ensures that your files are parsed in the ECMAScript strict mode, and emit “use strict” for each source file.
+    "exactOptionalPropertyTypes": true, // Type 'undefined' is not assignable.
+    "noFallthroughCasesInSwitch": true, // Report errors for fallthrough cases in switch statements.
+    "noImplicitAny": true, // In some cases where no type annotations are present, TypeScript will fall back to a type of any for a variable when it cannot infer the type.
+    "noImplicitReturns": true, // TypeScript will check all code paths in a function to ensure they return a value.
+    "noUnusedLocals": true, // Report errors on unused local variables.
+    "noUnusedParameters": true, // Report errors on unused parameters in functions.
+    "strict": true
+
+    // Modules (https://www.typescriptlang.org/tsconfig#Modules_6244)
   },
   "include": ["next-env.d.ts", "**/*.ts", "**/*.tsx"],
   "exclude": ["node_modules"]
