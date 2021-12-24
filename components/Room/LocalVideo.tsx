@@ -22,7 +22,7 @@ const LocalVideo: NextPage<Props> = ({ setLocalStream }) => {
       .catch((error) => console.error(error));
   }, [localVideoRef, setLocalStream]);
 
-  return <video width={600} ref={localVideoRef} autoPlay playsInline></video>;
+  return <video ref={localVideoRef} autoPlay playsInline width={600}></video>;
 };
 
 export default LocalVideo;
