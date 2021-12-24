@@ -1,7 +1,7 @@
-name: lint
+name: CI
 on: push
 jobs:
-  eslint:
+  lint:
     runs-on: ubuntu-latest
     steps:
       - uses: actions/checkout@v2
@@ -19,5 +19,5 @@ jobs:
             ${{ runner.os }}-
       - name: Install modules
         run: yarn
-      - name: Run ESLint
+      - name: Run ESLint / prettier
         run: yarn lint
