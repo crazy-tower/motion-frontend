@@ -18,7 +18,7 @@ const Home: NextPage = () => {
         </h1>
 
         <Link href="/room">
-          <a className={styles.description}>Go to camera &rarr;</a>
+          <a className={styles.description}>Go to Room! &rarr;</a>
         </Link>
       </main>
     </div>
