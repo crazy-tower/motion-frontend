@@ -1,28 +1,17 @@
-import { NextPage } from "next";
-import Head from "next/head";
-import { useEffect } from "react";
+import type { NextPage } from 'next'
+import Head from 'next/head'
+import Room from '../components/Room'
 
-const Room: NextPage = () => {
-  useEffect(() => {
-    navigator.mediaDevices
-      .getUserMedia({
-        video: true,
-      })
-      .then((mediaStream: MediaStream) => {
-        const localVideo = document.querySelector("video");
-        if (localVideo) {
-          localVideo.srcObject = mediaStream;
-        }
-      });
-  });
+const Page: NextPage = () => {
   return (
     <>
       <Head>
         <title>Room</title>
       </Head>
-      <video autoPlay playsInline></video>
+      <h1>Realtime communication with WebRTC</h1>
+      <Room />
     </>
-  );
-};
+  )
+}
 
-export default Room;
+export default Page

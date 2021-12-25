@@ -1,9 +1,9 @@
-import type { NextPage } from "next";
-import Head from "next/head";
-import Link from "next/link";
-import styles from "../styles/Home.module.css";
+import type { NextPage } from 'next'
+import Head from 'next/head'
+import Link from 'next/link'
+import styles from '../styles/Home.module.css'
 
-const Home: NextPage = () => {
+const Page: NextPage = () => {
   return (
     <div className={styles.container}>
       <Head>
@@ -18,11 +18,11 @@ const Home: NextPage = () => {
         </h1>
 
         <Link href="/room">
-          <a className={styles.description}>Go to camera &rarr;</a>
+          <a className={styles.description}>Go to Room! &rarr;</a>
         </Link>
       </main>
     </div>
-  );
-};
+  )
+}
 
-export default Home;
+export default Page
