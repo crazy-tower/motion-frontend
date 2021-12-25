@@ -32,11 +32,11 @@ const style = {
 }
 
 // Drawing function
-export const drawHand = (predictions, ctx) => {
+export const drawHand = (predictions: any, ctx: any) => {
   // Check if we have predictions
   if (predictions.length > 0) {
     // Loop through each prediction
-    predictions.forEach((prediction) => {
+    predictions.forEach((prediction: any) => {
       // Grab landmarks
       const landmarks = prediction.landmarks
 

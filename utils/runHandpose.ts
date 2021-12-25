@@ -2,7 +2,7 @@ import { drawHand } from './drawHand'
 import * as handpose from '@tensorflow-models/handpose'
 import '@tensorflow/tfjs-backend-webgl'
 
-const runHandpose = async (localVideoRef, canvasRef) => {
+const runHandpose = async (localVideoRef: any, canvasRef: any) => {
   const net = await handpose.load()
   console.log('Handpose model loaded.')
   //  Loop and detect hands
@@ -11,7 +11,7 @@ const runHandpose = async (localVideoRef, canvasRef) => {
   }, 100)
 }
 
-const detect = async (net, localVideoRef, canvasRef) => {
+const detect = async (net: any, localVideoRef: any, canvasRef: any) => {
   // Check data is available
   if (
     typeof localVideoRef.current !== 'undefined' &&
