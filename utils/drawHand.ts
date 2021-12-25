@@ -1,4 +1,4 @@
-const fingerJoints = {
+const fingerJoints: { [key: string]: number[] } = {
   thumb: [0, 1, 2, 3, 4],
   indexFinger: [0, 5, 6, 7, 8],
   middleFinger: [0, 9, 10, 11, 12],
@@ -6,8 +6,13 @@ const fingerJoints = {
   pinky: [0, 17, 18, 19, 20],
 }
 
+interface colorSize {
+  color: string
+  size: number
+}
+
 // Infinity Gauntlet Style
-const style = {
+const style: { [key: number]: colorSize } = {
   0: { color: 'yellow', size: 15 },
   1: { color: 'gold', size: 6 },
   2: { color: 'green', size: 10 },
@@ -42,7 +47,7 @@ export const drawHand = (predictions: any, ctx: any) => {
 
       // Loop through fingers
       for (let j = 0; j < Object.keys(fingerJoints).length; j++) {
-        let finger = Object.keys(fingerJoints)[j]
+        let finger: string = Object.keys(fingerJoints)[j]
         //  Loop through pairs of joints
         for (let k = 0; k < fingerJoints[finger].length - 1; k++) {
           // Get pairs of joints
