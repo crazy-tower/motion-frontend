@@ -33,7 +33,6 @@ const LocalVideo: NextPage<Props> = ({ setLocalStream }) => {
           position: 'relative',
           left: 0,
           right: 0,
-          zindex: 9,
           width: 600,
           height: 480,
         }}
@@ -47,7 +46,6 @@ const LocalVideo: NextPage<Props> = ({ setLocalStream }) => {
             marginRight: 'auto',
             left: 0,
             right: 0,
-            zindex: 9,
             width: 600,
             height: 480,
           }}
@@ -60,7 +58,6 @@ const LocalVideo: NextPage<Props> = ({ setLocalStream }) => {
             marginRight: 'auto',
             left: 0,
             right: 0,
-            zindex: 9,
             width: 600,
             height: 480,
           }}
