@@ -158,11 +158,11 @@ const requestTurn = (turnURL: string) => {
   }
 };
 
-const hangup = () => {
-  console.log('Hanging up.');
-  stop();
-  sendMessage('bye');
-};
+// const hangup = () => {
+//   console.log('Hanging up.');
+//   stop();
+//   sendMessage('bye');
+// };
 
 const handleRemoteHangup = () => {
   console.log('Session terminated.');
@@ -185,7 +185,7 @@ const setupRTC = (
   remoteVideo: HTMLVideoElement
 ) => {
   // Set up socket
-  socket = io('http://localhost:8080').connect();
+  socket = io(process.env.NEXT_PUBLIC_SIGNALING_SERVER).connect();
   socket.emit('create or join', room);
 
   socket.on('created', (room) => {
