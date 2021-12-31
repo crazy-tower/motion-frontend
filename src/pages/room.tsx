@@ -1,6 +1,6 @@
-import type { NextPage } from 'next'
-import Head from 'next/head'
-import Room from '../components/Room'
+import type { NextPage } from 'next';
+import Head from 'next/head';
+import Room from '../components/Room';
 
 const Page: NextPage = () => {
   return (
@@ -11,7 +11,7 @@ const Page: NextPage = () => {
       <h1>Realtime communication with WebRTC</h1>
       <Room />
     </>
-  )
-}
+  );
+};
 
-export default Page
+export default Page;
