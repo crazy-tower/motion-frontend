@@ -6,8 +6,9 @@ import OperationButtons from './operationButtons';
 
 const Room: NextPage = () => {
   const localVideoRef = useRef<HTMLVideoElement>(null);
-  const canvasRef = useRef<HTMLCanvasElement>(null);
+  const localCanvasRef = useRef<HTMLCanvasElement>(null);
   const remoteVideoRef = useRef<HTMLVideoElement>(null);
+  const remoteCanvasRef = useRef<HTMLCanvasElement>(null);
 
   useEffect(() => {
     if (!localVideoRef.current || !remoteVideoRef.current) return;
@@ -32,7 +33,7 @@ const Room: NextPage = () => {
             ref={localVideoRef}
             autoPlay
             playsInline
-            onLoadedData={() => runHandpose(localVideoRef, canvasRef)}
+            onLoadedData={() => runHandpose(localVideoRef, localCanvasRef)}
             style={{
               position: 'absolute',
               marginLeft: 'auto',
@@ -43,7 +44,7 @@ const Room: NextPage = () => {
             }}
           ></video>
           <canvas
-            ref={canvasRef}
+            ref={localCanvasRef}
             style={{
               position: 'absolute',
               marginLeft: 'auto',
@@ -69,6 +70,7 @@ const Room: NextPage = () => {
             ref={remoteVideoRef}
             autoPlay
             playsInline
+            onLoadedData={() => runHandpose(remoteVideoRef, remoteCanvasRef)}
             style={{
               position: 'absolute',
               marginLeft: 'auto',
@@ -80,6 +82,7 @@ const Room: NextPage = () => {
           ></video>
 
           <canvas
+            ref={remoteCanvasRef}
             style={{
               position: 'absolute',
               marginLeft: 'auto',
