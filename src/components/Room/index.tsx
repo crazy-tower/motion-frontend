@@ -2,6 +2,7 @@ import type { NextPage } from 'next';
 import { useEffect, useRef } from 'react';
 import { runHandpose } from '../../utils/runHandpose';
 import { setupRTC } from '../../utils/webRTC';
+import OperationButtons from './operationButtons';
 
 const Room: NextPage = () => {
   const localVideoRef = useRef<HTMLVideoElement>(null);
@@ -15,45 +16,83 @@ const Room: NextPage = () => {
   }, []);
 
   return (
-    <>
-      <div
-        style={{
-          position: 'relative',
-          left: 0,
-          right: 0,
-          width: 600,
-          height: 480,
-        }}
-      >
-        <video
-          ref={localVideoRef}
-          autoPlay
-          playsInline
-          onLoadedData={() => runHandpose(localVideoRef, canvasRef)}
+    <div>
+      <div style={{ textAlign: 'center' }}>
+        <div
           style={{
-            marginLeft: 'auto',
-            marginRight: 'auto',
+            position: 'relative',
             left: 0,
+            right: 50,
+            width: 600,
+            height: 500,
+            display: 'inline-block',
+          }}
+        >
+          <video
+            ref={localVideoRef}
+            autoPlay
+            playsInline
+            onLoadedData={() => runHandpose(localVideoRef, canvasRef)}
+            style={{
+              position: 'absolute',
+              marginLeft: 'auto',
+              marginRight: 'auto',
+              left: 0,
+              right: 0,
+              width: 600,
+            }}
+          ></video>
+          <canvas
+            ref={canvasRef}
+            style={{
+              position: 'absolute',
+              marginLeft: 'auto',
+              marginRight: 'auto',
+              left: 0,
+              right: 0,
+              width: 600,
+            }}
+          />
+        </div>
+
+        <div
+          style={{
+            position: 'relative',
+            left: 50,
             right: 0,
             width: 600,
-            height: 480,
+            height: 500,
+            display: 'inline-block',
           }}
-        ></video>
-        <canvas
-          ref={canvasRef}
-          style={{
-            position: 'absolute',
-            marginLeft: 'auto',
-            marginRight: 'auto',
-            left: 0,
-            right: 0,
-            width: 600,
-            height: 480,
-          }}
-        />
+        >
+          <video
+            ref={remoteVideoRef}
+            autoPlay
+            playsInline
+            style={{
+              position: 'absolute',
+              marginLeft: 'auto',
+              marginRight: 'auto',
+              left: 0,
+              right: 0,
+              width: 600,
+            }}
+          ></video>
+
+          <canvas
+            style={{
+              position: 'absolute',
+              marginLeft: 'auto',
+              marginRight: 'auto',
+              left: 0,
+              right: 0,
+              width: 600,
+            }}
+          />
+        </div>
       </div>
-      <video ref={remoteVideoRef} autoPlay playsInline width={600}></video>
-    </>
+      <OperationButtons />
+    </div>
   );
 };
 
