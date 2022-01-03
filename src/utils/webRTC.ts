@@ -26,12 +26,12 @@ type RTCIceCandidateMessage = {
   candidate: RTCIceCandidate['candidate'];
 };
 
-type PeerConnectionConfig = {
-  iceServers: Array<{
-    urls: string;
-    credential?: string;
-  }>;
-};
+// type PeerConnectionConfig = {
+//   iceServers: Array<{
+//     urls: string;
+//     credential?: string;
+//   }>;
+// };
 
 let room = 'foo';
 // Could prompt for room name:
@@ -44,13 +44,13 @@ let isStarted = false;
 let localStream: MediaStream;
 let remoteStream: MediaStream;
 let pc: RTCPeerConnection | null;
-let pcConfig: PeerConnectionConfig = {
-  iceServers: [
-    {
-      urls: 'stun:stun.l.google.com:19302',
-    },
-  ],
-};
+// let pcConfig: PeerConnectionConfig = {
+//   iceServers: [
+//     {
+//       urls: 'stun:stun.l.google.com:19302',
+//     },
+//   ],
+// };
 
 const sendMessage = (
   message: string | RTCSessionDescriptionInit | RTCIceCandidateMessage
@@ -131,32 +131,32 @@ const setLocalAndSendMessage = (
   sendMessage(sessionDescription);
 };
 
-const requestTurn = (turnURL: string) => {
-  var turnExists = false;
-  for (var i in pcConfig.iceServers) {
-    if (pcConfig.iceServers[i].urls.substr(0, 5) === 'turn:') {
-      turnExists = true;
-      break;
-    }
-  }
-  if (!turnExists) {
-    console.log('Getting TURN server from ', turnURL);
-    // No TURN server. Get one from computeengineondemand.appspot.com:
-    var xhr = new XMLHttpRequest();
-    xhr.onreadystatechange = function () {
-      if (xhr.readyState === 4 && xhr.status === 200) {
-        const turnServer = JSON.parse(xhr.responseText);
-        console.log('Got TURN server: ', turnServer);
-        pcConfig.iceServers.push({
-          urls: 'turn:' + turnServer.username + '@' + turnServer.turn,
-          credential: turnServer.password,
-        });
-      }
-    };
-    xhr.open('GET', turnURL, true);
-    xhr.send();
-  }
-};
+// const requestTurn = (turnURL: string) => {
+//   var turnExists = false;
+//   for (var i in pcConfig.iceServers) {
+//     if (pcConfig.iceServers[i].urls.substr(0, 5) === 'turn:') {
+//       turnExists = true;
+//       break;
+//     }
+//   }
+//   if (!turnExists) {
+//     console.log('Getting TURN server from ', turnURL);
+//     // No TURN server. Get one from computeengineondemand.appspot.com:
+//     var xhr = new XMLHttpRequest();
+//     xhr.onreadystatechange = function () {
+//       if (xhr.readyState === 4 && xhr.status === 200) {
+//         const turnServer = JSON.parse(xhr.responseText);
+//         console.log('Got TURN server: ', turnServer);
+//         pcConfig.iceServers.push({
+//           urls: 'turn:' + turnServer.username + '@' + turnServer.turn,
+//           credential: turnServer.password,
+//         });
+//       }
+//     };
+//     xhr.open('GET', turnURL, true);
+//     xhr.send();
+//   }
+// };
 
 // const hangup = () => {
 //   console.log('Hanging up.');
@@ -281,11 +281,11 @@ const setupRTC = (
     });
 
   // Set up TURN server
-  if (location.hostname !== 'localhost') {
-    requestTurn(
-      'https://computeengineondemand.appspot.com/turn?username=41784574&key=4080218913'
-    );
-  }
+  // if (location.hostname !== 'localhost') {
+  //   requestTurn(
+  //     'https://computeengineondemand.appspot.com/turn?username=41784574&key=4080218913'
+  //   );
+  // }
 
   // Must first bye
   window.onbeforeunload = function () {
