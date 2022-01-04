@@ -33,10 +33,6 @@ type RTCIceCandidateMessage = {
 //   }>;
 // };
 
-let room = 'foo';
-// Could prompt for room name:
-// room = prompt('Enter room name:');
-
 let socket: Socket<ServerToClientEvents, ClientToServerEvents>;
 let isChannelReady = false;
 let isInitiator = false; // Roomが存在するか
@@ -181,6 +177,7 @@ const stop = () => {
 };
 
 const setupRTC = (
+  room: string,
   localVideo: HTMLVideoElement,
   remoteVideo: HTMLVideoElement
 ) => {

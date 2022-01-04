@@ -4,7 +4,11 @@ import { runHandpose } from '../../utils/runHandpose';
 import { setupRTC } from '../../utils/webRTC';
 import OperationButtons from './OperationButtons';
 
-const Room: NextPage = () => {
+type Props = {
+  room: string;
+};
+
+const Room: NextPage<Props> = ({ room }) => {
   const localVideoRef = useRef<HTMLVideoElement>(null);
   const localCanvasRef = useRef<HTMLCanvasElement>(null);
   const remoteVideoRef = useRef<HTMLVideoElement>(null);
@@ -13,8 +17,8 @@ const Room: NextPage = () => {
   useEffect(() => {
     if (!localVideoRef.current || !remoteVideoRef.current) return;
 
-    setupRTC(localVideoRef.current, remoteVideoRef.current);
-  }, []);
+    setupRTC(room, localVideoRef.current, remoteVideoRef.current);
+  }, [room]);
 
   return (
     <div>
