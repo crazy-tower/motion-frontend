@@ -9,6 +9,11 @@ import {
   faSignOutAlt,
   faUserFriends,
 } from '@fortawesome/free-solid-svg-icons';
+// Over sized icons on page refresh
+// FYI: https://github.com/FortAwesome/react-fontawesome/issues/134
+import '@fortawesome/fontawesome-svg-core/styles.css';
+import { config } from '@fortawesome/fontawesome-svg-core';
+config.autoAddCss = false;
 
 const OperationButtons: NextPage = () => {
   return (
