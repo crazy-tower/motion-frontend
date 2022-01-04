@@ -15,6 +15,9 @@
     "prepare": "husky install"
   },
   "dependencies": {
+    "@fortawesome/fontawesome-svg-core": "^1.2.36",
+    "@fortawesome/free-solid-svg-icons": "^5.15.4",
+    "@fortawesome/react-fontawesome": "^0.1.16",
     "@mediapipe/hands": "^0.4.1635986972",
     "@tensorflow-models/hand-pose-detection": "^0.0.1",
     "@tensorflow-models/handpose": "^0.0.7",
