@@ -33,6 +33,7 @@ const Room: NextPage = () => {
             ref={localVideoRef}
             autoPlay
             playsInline
+            muted
             onLoadedData={() => runHandpose(localVideoRef, localCanvasRef)}
             style={{
               position: 'absolute',
