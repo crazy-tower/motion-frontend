@@ -2,7 +2,7 @@ import type { NextPage } from 'next';
 import { useEffect, useRef } from 'react';
 import { runHandpose } from '../../utils/runHandpose';
 import { setupRTC } from '../../utils/webRTC';
-import OperationButtons from './operationButtons';
+import OperationButtons from './OperationButtons';
 
 const Room: NextPage = () => {
   const localVideoRef = useRef<HTMLVideoElement>(null);
