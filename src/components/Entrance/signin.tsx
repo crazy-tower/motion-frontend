@@ -1,6 +1,7 @@
 import type { NextPage } from 'next';
 import React, { useState } from 'react';
 import { useRouter } from 'next/router';
+import Link from 'next/link';
 
 const Signin: NextPage = () => {
   const [username, setUsername] = useState<string>('');
@@ -26,7 +27,8 @@ const Signin: NextPage = () => {
       if (res.status == 200) {
         router.replace('/room');
       } else {
-        console.log('sign in 失敗');
+        const data = await res.json();
+        alert(data.error);
       }
 
       setUsername('');
@@ -41,8 +43,16 @@ const Signin: NextPage = () => {
         <div className="max-w-md w-full space-y-8">
           <div>
             <h2 className="mt-6 text-center text-3xl font-extrabold text-gray-900">
-              Sign in to your account
+              Sign in
             </h2>
+            <p className="mt-2 text-center text-sm text-gray-600">
+              New to Motion?{' '}
+              <Link href="signup">
+                <a className="font-medium text-indigo-600 hover:text-indigo-500">
+                  Sign up for free
+                </a>
+              </Link>
+            </p>
           </div>
           <form className="mt-8 space-y-6" action="#" method="POST">
             <input type="hidden" name="remember" defaultValue="true" />
@@ -98,12 +108,12 @@ const Signin: NextPage = () => {
               </div>
 
               <div className="text-sm">
-                <a
+                {/* <a
                   href="#"
                   className="font-medium text-indigo-600 hover:text-indigo-500"
                 >
                   Forgot your password?
-                </a>
+                </a> */}
               </div>
             </div>
 

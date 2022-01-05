@@ -6,7 +6,7 @@ import Signin from '../components/Entrance/signin';
 
 const Page: NextPage = () => {
   return (
-    <div className={styles.container}>
+    <div className={styles.entranceContainer}>
       <Head>
         <title>Motion</title>
       </Head>
