@@ -18,6 +18,7 @@
     "@fortawesome/fontawesome-svg-core": "^1.2.36",
     "@fortawesome/free-solid-svg-icons": "^5.15.4",
     "@fortawesome/react-fontawesome": "^0.1.16",
+    "@headlessui/react": "^1.4.2",
     "@mediapipe/hands": "^0.4.1635986972",
     "@tensorflow-models/hand-pose-detection": "^0.0.1",
     "@tensorflow-models/handpose": "^0.0.7",
@@ -31,6 +32,7 @@
     "react-dom": "17.0.2",
     "scatter-gl": "^0.0.12",
     "socket.io-client": "^4.4.0",
+    "swr": "^1.1.2",
     "webrtc-adapter": "^8.1.1"
   },
   "devDependencies": {
@@ -47,5 +49,18 @@
     "prettier": "2.5.1",
     "tailwindcss": "^3.0.10",
     "typescript": "4.5.4"
-  }
+  },
+  "description": "First, run the development server:",
+  "version": "1.0.0",
+  "main": ".lintstagedrc.js",
+  "repository": {
+    "type": "git",
+    "url": "git+https://github.com/CrazyTower/motion-frontend.git"
+  },
+  "author": "",
+  "license": "ISC",
+  "bugs": {
+    "url": "https://github.com/CrazyTower/motion-frontend/issues"
+  },
+  "homepage": "https://github.com/CrazyTower/motion-frontend#readme"
 }
