@@ -12,7 +12,7 @@ const Page: NextPage = () => {
 
   const router = useRouter();
 
-  const handleSubmit = async (event: React.FormEvent) => {
+  const handleSubmit = async () => {
     setWorking(true);
 
     try {
