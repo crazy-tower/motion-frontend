@@ -1,6 +1,7 @@
 import type { NextPage } from 'next';
 import { useEffect, useRef } from 'react';
 import { runHandpose } from '../../utils/runHandpose';
+import { runFaceDetect } from '../../utils/runFaceDetect';
 import { setupRTC } from '../../utils/webRTC';
 import OperationButtons from './OperationButtons';
 
@@ -38,7 +39,10 @@ const Room: NextPage<Props> = ({ room }) => {
             autoPlay
             playsInline
             muted
-            onLoadedData={() => runHandpose(localVideoRef, localCanvasRef)}
+            onLoadedData={() => {
+              runHandpose(localVideoRef, localCanvasRef);
+              runFaceDetect(localVideoRef, localCanvasRef);
+            }}
             style={{
               position: 'absolute',
               marginLeft: 'auto',
@@ -75,7 +79,10 @@ const Room: NextPage<Props> = ({ room }) => {
             ref={remoteVideoRef}
             autoPlay
             playsInline
-            onLoadedData={() => runHandpose(remoteVideoRef, remoteCanvasRef)}
+            onLoadedData={() => {
+              runHandpose(remoteVideoRef, remoteCanvasRef);
+              runFaceDetect(remoteVideoRef, remoteCanvasRef);
+            }}
             style={{
               position: 'absolute',
               marginLeft: 'auto',
