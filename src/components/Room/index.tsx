@@ -11,9 +11,11 @@ type Props = {
 
 const Room: NextPage<Props> = ({ room }) => {
   const localVideoRef = useRef<HTMLVideoElement>(null);
-  const localCanvasRef = useRef<HTMLCanvasElement>(null);
+  const localHandCanvasRef = useRef<HTMLCanvasElement>(null);
+  const localFaceCanvasRef = useRef<HTMLCanvasElement>(null);
   const remoteVideoRef = useRef<HTMLVideoElement>(null);
-  const remoteCanvasRef = useRef<HTMLCanvasElement>(null);
+  const remoteHandCanvasRef = useRef<HTMLCanvasElement>(null);
+  const remoteFaceCanvasRef = useRef<HTMLCanvasElement>(null);
 
   useEffect(() => {
     if (!localVideoRef.current || !remoteVideoRef.current) return;
@@ -40,8 +42,8 @@ const Room: NextPage<Props> = ({ room }) => {
             playsInline
             muted
             onLoadedData={() => {
-              runHandpose(localVideoRef, localCanvasRef);
-              runFaceDetect(localVideoRef, localCanvasRef);
+              runHandpose(localVideoRef, localHandCanvasRef);
+              runFaceDetect(localVideoRef, localFaceCanvasRef);
             }}
             style={{
               position: 'absolute',
@@ -53,7 +55,18 @@ const Room: NextPage<Props> = ({ room }) => {
             }}
           ></video>
           <canvas
-            ref={localCanvasRef}
+            ref={localHandCanvasRef}
+            style={{
+              position: 'absolute',
+              marginLeft: 'auto',
+              marginRight: 'auto',
+              left: 0,
+              right: 0,
+              width: 600,
+            }}
+          />
+          <canvas
+            ref={localFaceCanvasRef}
             style={{
               position: 'absolute',
               marginLeft: 'auto',
@@ -80,8 +93,8 @@ const Room: NextPage<Props> = ({ room }) => {
             autoPlay
             playsInline
             onLoadedData={() => {
-              runHandpose(remoteVideoRef, remoteCanvasRef);
-              runFaceDetect(remoteVideoRef, remoteCanvasRef);
+              runHandpose(remoteVideoRef, remoteHandCanvasRef);
+              runFaceDetect(remoteVideoRef, remoteFaceCanvasRef);
             }}
             style={{
               position: 'absolute',
@@ -94,7 +107,18 @@ const Room: NextPage<Props> = ({ room }) => {
           ></video>
 
           <canvas
-            ref={remoteCanvasRef}
+            ref={remoteHandCanvasRef}
+            style={{
+              position: 'absolute',
+              marginLeft: 'auto',
+              marginRight: 'auto',
+              left: 0,
+              right: 0,
+              width: 600,
+            }}
+          />
+          <canvas
+            ref={remoteFaceCanvasRef}
             style={{
               position: 'absolute',
               marginLeft: 'auto',
