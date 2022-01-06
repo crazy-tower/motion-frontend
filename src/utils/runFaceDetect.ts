@@ -59,7 +59,7 @@ const runFaceDetect = async (
         }
       }
     }
-  }, 100);
+  }, 10);
 };
 
 export { runFaceDetect };
