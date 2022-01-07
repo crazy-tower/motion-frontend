@@ -1308,10 +1308,10 @@
     "@typescript-eslint/types" "5.6.0"
     eslint-visitor-keys "^3.0.0"
 
-"@vladmandic/face-api@^1.6.2":
-  version "1.6.2"
-  resolved "https://registry.yarnpkg.com/@vladmandic/face-api/-/face-api-1.6.2.tgz#3d0d13ce1eac49dc2c1da50ca615bef012006e8d"
-  integrity sha512-Ilk+YiLD2H6LlwU6UODbpe4bj/lNI49wyivR82r5KJyqaAzE9GZuIdkhtRvKdrNrZsr6Mc6tex8aiLvgn3ZaVA==
+"@vladmandic/face-api@^1.6.3":
+  version "1.6.3"
+  resolved "https://registry.yarnpkg.com/@vladmandic/face-api/-/face-api-1.6.3.tgz#ef2181c26558a9a9a6d9fdbbc79a43ff03d82156"
+  integrity sha512-dB/oKHvst9Byw9umxJE4uFKpjUoVBj1AkJQUrTyHqjk2Q3AuG7mnmjVH3jJ/jKgmnAPRxwO1MBdqCptb6eyZiQ==
 
 abbrev@1:
   version "1.1.1"
