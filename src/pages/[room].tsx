@@ -7,14 +7,14 @@ import { useRouter } from 'next/router';
 
 const Page: NextPage = () => {
   const router = useRouter();
-  const room = router.query.room as string;
+  const room = router.query.room as string | undefined;
 
   if (!room) return <p>No room</p>;
 
   return (
     <>
       <Head>
-        <title>Room</title>
+        <title>Room | motion</title>
       </Head>
       <div className={styles.container}>
         <Header />

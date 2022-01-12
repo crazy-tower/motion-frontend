@@ -176,6 +176,20 @@ const stop = () => {
   pc = null;
 };
 
+// Switch camera on/off
+const handleToggleCam = () => {
+  const videoTrack = localStream
+    .getTracks()
+    .find((track) => track.kind === 'video');
+  if (!videoTrack) return false;
+  if (videoTrack.enabled) {
+    videoTrack.enabled = false;
+  } else {
+    videoTrack.enabled = true;
+  }
+  return videoTrack.enabled;
+};
+
 const setupRTC = (
   room: string,
   localVideo: HTMLVideoElement,
@@ -290,4 +304,4 @@ const setupRTC = (
   };
 };
 
-export { setupRTC };
+export { setupRTC, handleToggleCam };

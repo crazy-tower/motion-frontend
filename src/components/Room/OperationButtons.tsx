@@ -8,20 +8,59 @@ import {
   faSignOutAlt,
   faUserFriends,
   faVideo,
+  faVideoSlash,
 } from '@fortawesome/free-solid-svg-icons';
 // Over sized icons on page refresh
 // FYI: https://github.com/FortAwesome/react-fontawesome/issues/134
 import '@fortawesome/fontawesome-svg-core/styles.css';
 import { config } from '@fortawesome/fontawesome-svg-core';
+import { handleToggleCam } from '../../utils/webRTC';
+import { useState } from 'react';
 config.autoAddCss = false;
 
 const OperationButtons: NextPage = () => {
+  const [camEnabled, setCamEnabled] = useState<boolean>(true);
+
   return (
     <div style={{ textAlign: 'center' }}>
       <div className="flex-auto">
-        <button className="bg-emerald-900 hover:bg-cyan-900 text-slate-50 font-bold py-2 px-4 rounded-full mx-2">
-          <FontAwesomeIcon icon={faVideo} />
-          &nbsp; Cam
+        <button
+          onClick={() => {
+            const enabled = handleToggleCam();
+            setCamEnabled(enabled);
+          }}
+        >
+          {camEnabled ? (
+            <div
+              style={{
+                display: 'flex',
+                alignItems: 'center',
+                justifyContent: 'center',
+                width: '50px',
+                height: '50px',
+                borderRadius: '10px',
+                background: 'rgba(0, 0, 0, 0.56)',
+                color: 'white',
+              }}
+            >
+              <FontAwesomeIcon icon={faVideo} />
+            </div>
+          ) : (
+            <div
+              style={{
+                display: 'flex',
+                alignItems: 'center',
+                justifyContent: 'center',
+                width: '50px',
+                height: '50px',
+                borderRadius: '10px',
+                background: '#f26b4d',
+                color: 'white',
+              }}
+            >
+              <FontAwesomeIcon icon={faVideoSlash} />
+            </div>
+          )}
         </button>
         <button className="bg-emerald-900 hover:bg-cyan-900 text-slate-50 font-bold py-2 px-4 rounded-full mx-2">
           <FontAwesomeIcon icon={faMicrophone} />
