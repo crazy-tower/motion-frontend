@@ -176,18 +176,32 @@ const stop = () => {
   pc = null;
 };
 
-// Switch camera on/off
-const handleToggleCam = () => {
-  const videoTrack = localStream
-    .getTracks()
-    .find((track) => track.kind === 'video');
-  if (!videoTrack) return false;
+/**
+ * カメラのオン/オフを切り替える
+ * @return {boolean} result カメラがオンか
+ */
+const handleToggleCam = (): boolean => {
+  const videoTrack = localStream.getVideoTracks()[0];
   if (videoTrack.enabled) {
     videoTrack.enabled = false;
   } else {
     videoTrack.enabled = true;
   }
   return videoTrack.enabled;
+};
+
+/**
+ * マイクのオン/オフを切り替える
+ * @return {boolean} result マイクがオンか
+ */
+const handleToggleAudio = (): boolean => {
+  const audioTrack = localStream.getAudioTracks()[0];
+  if (audioTrack.enabled) {
+    audioTrack.enabled = false;
+  } else {
+    audioTrack.enabled = true;
+  }
+  return audioTrack.enabled;
 };
 
 const setupRTC = (
@@ -304,4 +318,4 @@ const setupRTC = (
   };
 };
 
-export { setupRTC, handleToggleCam };
+export { setupRTC, handleToggleCam, handleToggleAudio };
