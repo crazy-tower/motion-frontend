@@ -1,13 +1,13 @@
 import type { NextPage } from 'next';
 import { FontAwesomeIcon } from '@fortawesome/react-fontawesome';
 import {
-  faCamera,
   faComment,
   faDesktop,
   faMicrophone,
   faRecordVinyl,
   faSignOutAlt,
   faUserFriends,
+  faVideo,
 } from '@fortawesome/free-solid-svg-icons';
 // Over sized icons on page refresh
 // FYI: https://github.com/FortAwesome/react-fontawesome/issues/134
@@ -20,7 +20,7 @@ const OperationButtons: NextPage = () => {
     <div style={{ textAlign: 'center' }}>
       <div className="flex-auto">
         <button className="bg-emerald-900 hover:bg-cyan-900 text-slate-50 font-bold py-2 px-4 rounded-full mx-2">
-          <FontAwesomeIcon icon={faCamera} />
+          <FontAwesomeIcon icon={faVideo} />
           &nbsp; Cam
         </button>
         <button className="bg-emerald-900 hover:bg-cyan-900 text-slate-50 font-bold py-2 px-4 rounded-full mx-2">
