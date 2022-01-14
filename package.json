@@ -22,7 +22,7 @@
     "@mediapipe/hands": "^0.4.1635986972",
     "@tensorflow-models/hand-pose-detection": "^0.0.1",
     "@tensorflow-models/handpose": "^0.0.7",
-    "@tensorflow/tfjs": "^3.12.0",
+    "@tensorflow/tfjs": "^3.13.0",
     "@tensorflow/tfjs-backend-webgl": "^3.13.0",
     "@tensorflow/tfjs-converter": "^3.13.0",
     "@tensorflow/tfjs-core": "^3.13.0",
