@@ -1,9 +1,13 @@
 import { RefObject } from 'react';
 import * as faceapi from '@vladmandic/face-api';
+import { someoneLaugh } from './webRTC';
+
+const thresholdHappy = 0.9;
 
 const runFaceDetect = async (
   localVideoRef: RefObject<HTMLVideoElement>,
-  localCanvasRef: RefObject<HTMLCanvasElement>
+  localCanvasRef: RefObject<HTMLCanvasElement>,
+  room: string
 ) => {
   const loadModels = async () => {
     const MODEL_URL = '/models';
@@ -56,6 +60,12 @@ const runFaceDetect = async (
           faceapi.draw.drawDetections(canvas, resizeDetections);
           faceapi.draw.drawFaceLandmarks(canvas, resizeDetections);
           faceapi.draw.drawFaceExpressions(canvas, resizeDetections);
+        }
+
+        if (
+          detectionsWithExpressions['expressions']['happy'] > thresholdHappy
+        ) {
+          someoneLaugh(room);
         }
       }
     }
