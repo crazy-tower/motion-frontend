@@ -14,11 +14,11 @@ const defaultTheme = {
 
 const MyApp = ({ Component, pageProps }: AppProps) => {
   return (
-    <ThemeProvider theme={defaultTheme}>
-      <ChakraProvider>
+    <ChakraProvider>
+      <ThemeProvider theme={defaultTheme}>
         <Component {...pageProps} />
-      </ChakraProvider>
-    </ThemeProvider>
+      </ThemeProvider>
+    </ChakraProvider>
   );
 };
 
