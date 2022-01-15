@@ -15,10 +15,8 @@ jobs:
           key: ${{ runner.os }}-yarn-${{ hashFiles('**/yarn.lock') }}
           restore-keys: |
             ${{ runner.os }}-yarn-
-      - name: Check cache hit
-        if: steps.yarn-cache.outputs.cache-hit != 'true'
-        run: echo false
       - name: Install modules
+        if: steps.yarn-cache.outputs.cache-hit != 'true'
         run: yarn
       - name: Run ESLint / prettier
         run: yarn lint
@@ -36,10 +34,8 @@ jobs:
           key: ${{ runner.os }}-yarn-${{ hashFiles('**/yarn.lock') }}
           restore-keys: |
             ${{ runner.os }}-yarn-
-      - name: Check cache hit
-        if: steps.yarn-cache.outputs.cache-hit != 'true'
-        run: echo false
       - name: Install modules
+        if: steps.yarn-cache.outputs.cache-hit != 'true'
         run: yarn
       - name: Run type check
         run: yarn tsc
