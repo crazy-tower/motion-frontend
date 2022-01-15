@@ -288,11 +288,6 @@ const setupRTC = async (
   socket.on('user disconnected', (userID) => handleDisconnect(userID));
 
   socket.on('server is full', () => alert('chat is full'));
-
-  socket.on('someone is laughing', () => {
-    console.log('who laughing!!');
-    alert('someone is laughing');
-  });
 };
 
 const startScreenSharing = async (screenVideo: HTMLVideoElement) => {
