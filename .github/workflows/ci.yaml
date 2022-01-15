@@ -17,7 +17,7 @@ jobs:
             ${{ runner.os }}-yarn-
       - name: Check cache hit
         if: steps.cache-primes.outputs.cache-hit != 'true'
-        run: echo true
+        run: echo false
       - name: Install modules
         run: yarn
       - name: Run ESLint / prettier
@@ -38,7 +38,7 @@ jobs:
             ${{ runner.os }}-yarn-
       - name: Check cache hit
         if: steps.cache-primes.outputs.cache-hit != 'true'
-        run: echo true
+        run: echo false
       - name: Install modules
         run: yarn
       - name: Run type check
