@@ -51,7 +51,7 @@
     "npm-run-all": "^4.1.5",
     "postcss": "^8.4.5",
     "prettier": "2.5.1",
-    "tailwindcss": "^3.0.13",
+    "tailwindcss": "^3.0.15",
     "typescript": "4.5.4"
   },
   "description": "First, run the development server:",
