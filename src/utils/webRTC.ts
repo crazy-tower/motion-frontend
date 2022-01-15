@@ -11,6 +11,7 @@ type ServerToClientEvents = {
   'ice-candidate': (event: ReceiveIceCandidateEvent) => void;
   'user disconnected': (userID: string) => void;
   'server is full': () => void;
+  'someone is laughing': () => void;
 };
 
 type ClientToServerEvents = {
@@ -18,6 +19,7 @@ type ClientToServerEvents = {
   'peer connection request': (payload: PeerConnectionRequest) => void;
   'connection answer': (payload: PeerConnectionAnswerPayload) => void;
   'ice-candidate': (payload: IceCandidatePayload) => void;
+  'someone is laughing': (roomID: string) => void;
 };
 
 type PeerConnectionRequest = {
@@ -295,4 +297,10 @@ const startScreenSharing = async (screenVideo: HTMLVideoElement) => {
   screenVideo.srcObject = screenStream;
 };
 
-export { setupRTC, startScreenSharing, handleToggleCam, handleToggleAudio };
+export {
+  setupRTC,
+  startScreenSharing,
+  handleToggleCam,
+  handleToggleAudio,
+  socket,
+};
