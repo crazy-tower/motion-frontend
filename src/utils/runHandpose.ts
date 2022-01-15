@@ -8,7 +8,7 @@ const runHandpose = async (
   canvasRef: RefObject<HTMLCanvasElement>
 ) => {
   const net = await handpose.load();
-  console.log('Handpose model loaded.');
+  // console.log('Handpose model loaded.');
   //  Loop and detect hands
   setInterval(() => {
     detect(net, localVideoRef, canvasRef);
@@ -42,7 +42,7 @@ const detect = async (
 
     // Make Detections
     const hand = await net.estimateHands(video);
-    console.log(hand);
+    // console.log(hand);
 
     // Draw mesh
     const ctx = canvasRef.current.getContext('2d');

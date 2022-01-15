@@ -1,179 +1,227 @@
+import { Dispatch, SetStateAction } from 'react';
 import { io, Socket } from 'socket.io-client';
+
+// Type
 
 // https://socket.io/docs/v4/typescript/
 type ServerToClientEvents = {
-  created: (room: string) => void;
-  full: (room: string) => void;
-  join: (room: string) => void;
-  joined: (room: string) => void;
-  log: (array: string[]) => void;
-  message: (
-    message: string | RTCSessionDescriptionInit | RTCIceCandidateMessage
-  ) => void;
+  'all other users': (otherUsers: string[]) => void;
+  'connection offer': (event: PeerConnectionOffer) => void;
+  'connection answer': (event: PeerConnectionAnswerEvent) => void;
+  'ice-candidate': (event: ReceiveIceCandidateEvent) => void;
+  'user disconnected': (userID: string) => void;
+  'server is full': () => void;
 };
 
 type ClientToServerEvents = {
-  'create or join': (room: string) => void;
-  message: (
-    message: string | RTCSessionDescriptionInit | RTCIceCandidateMessage
-  ) => void;
+  'user joined room': (roomID: string) => void;
+  'peer connection request': (payload: PeerConnectionRequest) => void;
+  'connection answer': (payload: PeerConnectionAnswerPayload) => void;
+  'ice-candidate': (payload: IceCandidatePayload) => void;
 };
 
-type RTCIceCandidateMessage = {
-  type: 'candidate';
-  label: RTCIceCandidate['sdpMLineIndex'];
-  id: RTCIceCandidate['sdpMid'];
-  candidate: RTCIceCandidate['candidate'];
+type PeerConnectionRequest = {
+  sdp: RTCSessionDescription;
+  userIDToCall: string;
 };
 
-// type PeerConnectionConfig = {
-//   iceServers: Array<{
-//     urls: string;
-//     credential?: string;
-//   }>;
-// };
-
-let socket: Socket<ServerToClientEvents, ClientToServerEvents>;
-let isChannelReady = false;
-let isInitiator = false; // Roomが存在するか
-let isStarted = false;
-let localStream: MediaStream;
-let remoteStream: MediaStream;
-let pc: RTCPeerConnection | null;
-// let pcConfig: PeerConnectionConfig = {
-//   iceServers: [
-//     {
-//       urls: 'stun:stun.l.google.com:19302',
-//     },
-//   ],
-// };
-
-const sendMessage = (
-  message: string | RTCSessionDescriptionInit | RTCIceCandidateMessage
-) => {
-  console.log('Client sending message: ', message);
-  socket.emit('message', message);
+type PeerConnectionOffer = {
+  sdp: RTCSessionDescription;
+  callerID: string;
 };
 
-const maybeStart = (remoteVideo: HTMLVideoElement) => {
-  console.log('>>>>>>> maybeStart() ', isStarted, localStream, isChannelReady);
-  if (!isStarted && typeof localStream !== 'undefined' && isChannelReady) {
-    console.log('>>>>>> creating peer connection');
-    createPeerConnection(remoteVideo);
+type PeerConnectionAnswerPayload = {
+  sdp: RTCSessionDescription;
+  userIDToAnswerTo: string;
+};
+
+type PeerConnectionAnswerEvent = {
+  sdp: RTCSessionDescription;
+  answererID: string;
+};
+
+type IceCandidatePayload = {
+  target: string;
+  candidate: RTCIceCandidate;
+};
+
+type ReceiveIceCandidateEvent = {
+  candidate: RTCIceCandidate;
+  from: string;
+};
+
+const socket: Socket<ServerToClientEvents, ClientToServerEvents> = io(
+  process.env.NEXT_PUBLIC_SIGNALING_SERVER
+).connect();
+let peers = new Map<string, RTCPeerConnection>();
+let userStream: MediaStream;
+let remoteUserStreams = new Map<string, MediaStream>();
+let setRemoteUserStreams: Dispatch<SetStateAction<MediaStream[]>>;
+
+/**
+ * 部屋に入っている他のユーザにPeerConnectionを繋ぐ
+ * @param {string[]} otherUsers 他のユーザ
+ * @param {MediaStream} localStream 自分のストリーム情報
+ */
+const callOtherUsers = (otherUsers: string[], localStream: MediaStream) => {
+  otherUsers.forEach((userIDToCall) => {
+    const peer = createPeer(userIDToCall);
+    peers.set(userIDToCall, peer);
     localStream.getTracks().forEach((track) => {
-      if (pc === null) {
-        console.error('Failed to addTrack to PeerConnection. pc is null.');
-        return;
-      }
-      pc.addTrack(track, localStream);
+      peer.addTrack(track, localStream);
     });
-    isStarted = true;
-    console.log('isInitiator', isInitiator);
-    if (isInitiator) {
-      // doCall
-      console.log('Sending offer to peer');
-      if (pc === null) {
-        console.error('Failed to addTrack to PeerConnection. pc is null.');
-        return;
-      }
-      pc.createOffer()
-        .then(setLocalAndSendMessage)
-        .catch((event) => console.log('createOffer() error: ', event));
-    }
-  }
+  });
 };
 
-const createPeerConnection = (remoteVideo: HTMLVideoElement) => {
-  try {
-    pc = new RTCPeerConnection();
-    pc.onicecandidate = (event) => {
-      console.log('icecandidate event: ', event);
-      if (event.candidate) {
-        sendMessage({
-          type: 'candidate',
-          label: event.candidate.sdpMLineIndex,
-          id: event.candidate.sdpMid,
-          candidate: event.candidate.candidate,
-        });
-      } else {
-        console.log('End of candidates.');
-      }
-    };
-    pc.ontrack = (event) => {
-      console.log('Remote stream added.');
-      remoteStream = event.streams[0];
-      remoteStream.onremovetrack = (event) =>
-        console.log('Remote stream removed. Event: ', event);
-      remoteVideo.srcObject = remoteStream;
-    };
-    console.log('Created RTCPeerConnnection');
-    return;
-  } catch (e) {
-    console.log('Failed to create PeerConnection, exception: ' + e);
-    alert('Cannot create RTCPeerConnection object.');
-    return;
-  }
+/**
+ * 渡されたユーザとのPeerConnectionを繋ぐ
+ * @param {string} userIDToCall 電話を繋ぐユーザID
+ * @return {RTCPeerConnection} ピアコネクション
+ */
+const createPeer = (userIDToCall: string): RTCPeerConnection => {
+  const peer = new RTCPeerConnection({
+    iceServers: [
+      {
+        urls: 'stun:stun.stunprotocol.org',
+      },
+    ],
+  });
+  peer.onnegotiationneeded = () =>
+    userIDToCall ? handleNegotiationNeededEvent(peer, userIDToCall) : null;
+  peer.onicecandidate = handleICECandidateEvent;
+  peer.ontrack = (event) => handleTrackEvent(event, userIDToCall);
+  return peer;
 };
 
-const setLocalAndSendMessage = (
-  sessionDescription: RTCSessionDescriptionInit
+/**
+ * Peerを確立するための交渉をする
+ * @param {RTCPeerConnection} peer ピアコネクション
+ * @param {string} userIDToCall 電話を繋ぐユーザID
+ */
+const handleNegotiationNeededEvent = async (
+  peer: RTCPeerConnection,
+  userIDToCall: string
 ) => {
-  if (pc === null) {
-    console.error('Failed to addTrack to PeerConnection. pc is null.');
+  const offer = await peer.createOffer();
+  await peer.setLocalDescription(offer);
+  if (!peer.localDescription) {
+    console.error('Cannot find local description in peer.');
     return;
   }
-  pc.setLocalDescription(sessionDescription);
-  console.log('setLocalAndSendMessage sending message', sessionDescription);
-  sendMessage(sessionDescription);
+  const payload = {
+    sdp: peer.localDescription,
+    userIDToCall,
+  };
+
+  socket.emit('peer connection request', payload);
 };
 
-// const requestTurn = (turnURL: string) => {
-//   var turnExists = false;
-//   for (var i in pcConfig.iceServers) {
-//     if (pcConfig.iceServers[i].urls.substr(0, 5) === 'turn:') {
-//       turnExists = true;
-//       break;
-//     }
-//   }
-//   if (!turnExists) {
-//     console.log('Getting TURN server from ', turnURL);
-//     // No TURN server. Get one from computeengineondemand.appspot.com:
-//     var xhr = new XMLHttpRequest();
-//     xhr.onreadystatechange = function () {
-//       if (xhr.readyState === 4 && xhr.status === 200) {
-//         const turnServer = JSON.parse(xhr.responseText);
-//         console.log('Got TURN server: ', turnServer);
-//         pcConfig.iceServers.push({
-//           urls: 'turn:' + turnServer.username + '@' + turnServer.turn,
-//           credential: turnServer.password,
-//         });
-//       }
-//     };
-//     xhr.open('GET', turnURL, true);
-//     xhr.send();
-//   }
-// };
+/**
+ * 他のユーザからPeerConnectionのofferを受け取り、相手にanswerする
+ * @param {PeerConnectionOffer}  offer コネクションオファー
+ * @param {MediaStream} localStream ローカルストリーム
+ */
+const handleReceiveOffer = async (
+  { sdp, callerID }: PeerConnectionOffer,
+  localStream: MediaStream
+) => {
+  const peer = createPeer(callerID);
+  peers.set(callerID, peer);
+  const desc = new RTCSessionDescription(sdp);
+  await peer.setRemoteDescription(desc);
 
-// const hangup = () => {
-//   console.log('Hanging up.');
-//   stop();
-//   sendMessage('bye');
-// };
+  localStream.getTracks().forEach((track) => {
+    peer.addTrack(track, localStream);
+  });
 
-const handleRemoteHangup = () => {
-  console.log('Session terminated.');
-  stop();
-  isInitiator = false;
-};
+  const answer = await peer.createAnswer();
+  await peer.setLocalDescription(answer);
 
-const stop = () => {
-  isStarted = false;
-  if (pc === null) {
-    console.error('Failed to pc.stop(). pc is null.');
+  if (!peer.localDescription) {
+    console.error('Cannnot find local description in peer.');
     return;
   }
-  pc.close();
-  pc = null;
+
+  const payload = {
+    userIDToAnswerTo: callerID,
+    sdp: peer.localDescription,
+  };
+
+  socket.emit('connection answer', payload);
+};
+
+/**
+ * 送ったofferに返答が来たら、descriptionを登録する
+ * @param {PeerConnectionAnswerEvent}  offer コネクションオファー
+ */
+const handleAnswer = ({ sdp, answererID }: PeerConnectionAnswerEvent) => {
+  const desc = new RTCSessionDescription(sdp);
+  const peer = peers.get(answererID);
+
+  if (!peer) {
+    console.error('Cannot find peer. answererID:' + answererID);
+    return;
+  }
+
+  peer.setRemoteDescription(desc).catch((e) => console.error(e));
+};
+
+/**
+ * 候補があった場合、Peerで繋がっている全ユーザに候補を知らせる
+ * @param {RTCPeerConnectionIceEvent} event 候補イベント
+ */
+const handleICECandidateEvent = (event: RTCPeerConnectionIceEvent) => {
+  peers.forEach((_, userID) => {
+    if (!event.candidate) return;
+    const payload = {
+      target: userID,
+      candidate: event.candidate,
+    };
+
+    socket.emit('ice-candidate', payload);
+  });
+};
+
+/**
+ * 他のユーザの候補を受け取った場合、peerに候補を登録する
+ * @param {ReceiveIceCandidateEvent} event
+ * @param {RTCIceCandidate} event.candidate 通信先のユーザの候補
+ * @param {string} event.from 通信先のユーザID
+ */
+const handleReceiveIceCandidate = ({
+  candidate,
+  from,
+}: ReceiveIceCandidateEvent) => {
+  const inComingCandidate = new RTCIceCandidate(candidate);
+  const peer = peers.get(from);
+
+  if (!peer) {
+    console.error('Cannot find peer. userID:' + from);
+    return;
+  }
+
+  peer.addIceCandidate(inComingCandidate);
+};
+
+/**
+ * Peer先のユーザがtrackを追加した時、リモートビデオに表示させる
+ * @param {RTCTrackEvent} event trackが追加されたイベント
+ * @param {string} userID Peer先のユーザID
+ */
+const handleTrackEvent = (event: RTCTrackEvent, userID: string) => {
+  console.log('Add track from userID:' + userID);
+  remoteUserStreams.set(userID, event.streams[0]);
+  setRemoteUserStreams(Array.from(remoteUserStreams.values()));
+};
+
+/**
+ * ユーザからの接続が切れた時、そのユーザのビデオを削除する
+ * @param {string} userID ユーザID
+ */
+const handleDisconnect = (userID: string) => {
+  peers.delete(userID);
+  remoteUserStreams.delete(userID);
+  setRemoteUserStreams(Array.from(remoteUserStreams.values()));
 };
 
 /**
@@ -181,7 +229,7 @@ const stop = () => {
  * @return {boolean} result カメラがオンか
  */
 const handleToggleCam = (): boolean => {
-  const videoTrack = localStream.getVideoTracks()[0];
+  const videoTrack = userStream.getVideoTracks()[0];
   if (videoTrack.enabled) {
     videoTrack.enabled = false;
   } else {
@@ -195,7 +243,7 @@ const handleToggleCam = (): boolean => {
  * @return {boolean} result マイクがオンか
  */
 const handleToggleAudio = (): boolean => {
-  const audioTrack = localStream.getAudioTracks()[0];
+  const audioTrack = userStream.getAudioTracks()[0];
   if (audioTrack.enabled) {
     audioTrack.enabled = false;
   } else {
@@ -204,118 +252,40 @@ const handleToggleAudio = (): boolean => {
   return audioTrack.enabled;
 };
 
-const setupRTC = (
-  room: string,
+const setupRTC = async (
+  roomID: string,
   localVideo: HTMLVideoElement,
-  remoteVideo: HTMLVideoElement
+  setRemoteStreams: Dispatch<SetStateAction<MediaStream[]>>
 ) => {
+  setRemoteUserStreams = setRemoteStreams;
+
+  // Strat to get user media
+  const localStream = await navigator.mediaDevices.getUserMedia({
+    video: true,
+    audio: true,
+  });
+  userStream = localStream;
+  localVideo.srcObject = localStream;
+
+  // user joined room
+  socket.emit('user joined room', roomID);
+
   // Set up socket
-  socket = io(process.env.NEXT_PUBLIC_SIGNALING_SERVER).connect();
-  socket.emit('create or join', room);
+  socket.on('all other users', (otherUsers) =>
+    callOtherUsers(otherUsers, localStream)
+  );
 
-  socket.on('created', (room) => {
-    console.log('Created room ' + room);
-    isInitiator = true;
-  });
+  socket.on('connection offer', (payload) =>
+    handleReceiveOffer(payload, localStream)
+  );
 
-  socket.on('full', (room) => {
-    console.log('Room ' + room + ' is full');
-  });
+  socket.on('connection answer', handleAnswer);
 
-  socket.on('join', function (room) {
-    console.log('Another peer made a request to join room ' + room);
-    console.log('This peer is the initiator of room ' + room + '!');
-    isChannelReady = true;
-  });
+  socket.on('ice-candidate', handleReceiveIceCandidate);
 
-  socket.on('joined', function (room) {
-    console.log('joined: ' + room);
-    isChannelReady = true;
-  });
+  socket.on('user disconnected', (userID) => handleDisconnect(userID));
 
-  // Serverのログを出力
-  socket.on('log', function (array) {
-    console.log.apply(console, array);
-  });
-
-  // This client receives a message
-  socket.on('message', function (message) {
-    console.log('Client received message:', message);
-    if (typeof message === 'string') {
-      if (message === 'got user media') {
-        maybeStart(remoteVideo);
-      } else if (message === 'bye' && isStarted) {
-        handleRemoteHangup();
-      }
-    } else if ('type' in message) {
-      if (message.type === 'offer') {
-        if (!isInitiator && !isStarted) {
-          maybeStart(remoteVideo);
-        }
-        if (pc === null) {
-          console.error('Failed to setRemoteDescription. pc is null.');
-          return;
-        }
-        pc.setRemoteDescription(new RTCSessionDescription(message));
-        // doAnswer()
-        console.log('Sending answer to peer.');
-        pc.createAnswer()
-          .then(setLocalAndSendMessage)
-          .catch((error) => {
-            console.log(
-              'Failed to create session description: ' + error.toString()
-            );
-          });
-      } else if (message.type === 'answer' && isStarted) {
-        if (pc === null) {
-          console.error('Failed to pc.setRemoteDescription(). pc is null.');
-          return;
-        }
-        pc.setRemoteDescription(new RTCSessionDescription(message));
-      } else if (message.type === 'candidate' && isStarted) {
-        if (pc === null) {
-          console.error('Failed to addIceCandidate(). pc is null.');
-          return;
-        }
-        var candidate = new RTCIceCandidate({
-          sdpMLineIndex: message.label,
-          candidate: message.candidate,
-        });
-        pc.addIceCandidate(candidate);
-      }
-    }
-  });
-
-  // Start local video stream
-  navigator.mediaDevices
-    .getUserMedia({
-      audio: true,
-      video: true,
-    })
-    .then((stream) => {
-      console.log('Adding local stream.');
-      localStream = stream;
-      localVideo.srcObject = stream;
-      sendMessage('got user media');
-      if (isInitiator) {
-        maybeStart(remoteVideo);
-      }
-    })
-    .catch((e) => {
-      alert('getUserMedia() error: ' + e.name);
-    });
-
-  // Set up TURN server
-  // if (location.hostname !== 'localhost') {
-  //   requestTurn(
-  //     'https://computeengineondemand.appspot.com/turn?username=41784574&key=4080218913'
-  //   );
-  // }
-
-  // Must first bye
-  window.onbeforeunload = function () {
-    sendMessage('bye');
-  };
+  socket.on('server is full', () => alert('chat is full'));
 };
 
 export { setupRTC, handleToggleCam, handleToggleAudio };
