@@ -288,4 +288,11 @@ const setupRTC = async (
   socket.on('server is full', () => alert('chat is full'));
 };
 
-export { setupRTC, handleToggleCam, handleToggleAudio };
+const startScreenSharing = async (screenVideo: HTMLVideoElement) => {
+  const screenStream = await navigator.mediaDevices.getDisplayMedia({
+    video: true,
+  });
+  screenVideo.srcObject = screenStream;
+};
+
+export { setupRTC, startScreenSharing, handleToggleCam, handleToggleAudio };

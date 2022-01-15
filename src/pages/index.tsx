@@ -2,7 +2,7 @@ import type { NextPage } from 'next';
 import Head from 'next/head';
 import Link from 'next/link';
 import styles from '../styles/Home.module.css';
-import Signin from '../components/Entrance/signin';
+import Signin from '../components/block/Entrance/signin';
 
 const Page: NextPage = () => {
   return (
