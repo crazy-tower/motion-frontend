@@ -1,13 +1,14 @@
 import { NextPage } from 'next';
 import { RefObject, useRef } from 'react';
-// import { runFaceDetect } from '../../utils/runFaceDetect';
-// import { runHandpose } from '../../utils/runHandpose';
+import { runFaceDetect } from '../../../utils/runFaceDetect';
+// import { runHandpose } from '../../../utils/runHandpose';
 
 type Props = {
   localVideoRef: RefObject<HTMLVideoElement>;
+  room: string;
 };
 
-const LocalVideo: NextPage<Props> = ({ localVideoRef }) => {
+const LocalVideo: NextPage<Props> = ({ localVideoRef, room }) => {
   const handCanvasRef = useRef<HTMLCanvasElement>(null);
   const faceCanvasRef = useRef<HTMLCanvasElement>(null);
 
@@ -28,10 +29,10 @@ const LocalVideo: NextPage<Props> = ({ localVideoRef }) => {
           objectFit: 'cover',
           borderRadius: '8px',
         }}
-        // onLoadedData={() => {
-        //   runHandpose(localVideoRef, handCanvasRef);
-        //   runFaceDetect(localVideoRef, faceCanvasRef);
-        // }}
+        onLoadedData={() => {
+          // runHandpose(localVideoRef, handCanvasRef);
+          runFaceDetect(localVideoRef, faceCanvasRef, room);
+        }}
       ></video>
       <canvas
         ref={handCanvasRef}

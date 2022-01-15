@@ -1,6 +1,6 @@
 import type { NextPage } from 'next';
 import { useEffect, useRef, useState } from 'react';
-import { setupRTC, someoneLaugh } from '../../../utils/webRTC';
+import { setupRTC } from '../../../utils/webRTC';
 import Buttons from './Buttons';
 import LocalVideo from './LocalVideo';
 import RemoteVideo from './RemoteVideo';
@@ -48,14 +48,13 @@ const Room: NextPage<Props> = ({ room }) => {
             height: '400px',
           }}
         >
-          <LocalVideo localVideoRef={localVideoRef} />
+          <LocalVideo localVideoRef={localVideoRef} room={room} />
         </div>
         {remoteStreams.map((stream, i) => {
           return <RemoteVideo key={i} stream={stream} />;
         })}
       </div>
       {happyEffect ? <FontAwesomeIcon icon={faSmileBeam} /> : null}
-      <button onClick={() => someoneLaugh(room)}>laugh</button>
       <Buttons screenVideoRef={screenVideoRef} />
     </>
   );
