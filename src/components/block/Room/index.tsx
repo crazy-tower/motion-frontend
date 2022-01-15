@@ -1,16 +1,11 @@
 import type { NextPage } from 'next';
 import { useEffect, useRef, useState } from 'react';
-import { setupRTC } from '../../../utils/webRTC';
+import { setupRTC, someoneLaugh } from '../../../utils/webRTC';
 import Buttons from './Buttons';
 import LocalVideo from './LocalVideo';
 import RemoteVideo from './RemoteVideo';
-import { socket } from '../../../utils/webRTC';
-
 import { FontAwesomeIcon } from '@fortawesome/react-fontawesome';
 import { faSmileBeam } from '@fortawesome/free-solid-svg-icons';
-import '@fortawesome/fontawesome-svg-core/styles.css';
-import { config } from '@fortawesome/fontawesome-svg-core';
-config.autoAddCss = false;
 
 type Props = {
   room: string;
@@ -25,9 +20,7 @@ const Room: NextPage<Props> = ({ room }) => {
   useEffect(() => {
     if (!localVideoRef.current) return;
 
-    setupRTC(room, localVideoRef.current, setRemoteStreams);
-
-    socket.on('someone is laughing', () => {
+    setupRTC(room, localVideoRef.current, setRemoteStreams, () => {
       setHappyEffect(true);
       setTimeout(() => {
         setHappyEffect(false);
@@ -62,13 +55,7 @@ const Room: NextPage<Props> = ({ room }) => {
         })}
       </div>
       {happyEffect ? <FontAwesomeIcon icon={faSmileBeam} /> : null}
-      <button
-        onClick={() => {
-          socket.emit('someone is laughing', room);
-        }}
-      >
-        laugh
-      </button>
+      <button onClick={() => someoneLaugh(room)}>laugh</button>
       <Buttons screenVideoRef={screenVideoRef} />
     </>
   );

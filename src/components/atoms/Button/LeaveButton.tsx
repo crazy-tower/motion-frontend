@@ -1,13 +1,29 @@
 import { faSignOutAlt } from '@fortawesome/free-solid-svg-icons';
 import { FontAwesomeIcon } from '@fortawesome/react-fontawesome';
 import type { NextPage } from 'next';
+import Link from 'next/link';
+import { hangUp } from '../../../utils/webRTC';
 
 const LeaveButton: NextPage = () => {
   return (
-    <button className="bg-emerald-900 hover:bg-cyan-900 text-slate-50 font-bold py-2 px-4 rounded-full mx-2">
-      <FontAwesomeIcon icon={faSignOutAlt} />
-      &nbsp; Leave
-    </button>
+    <Link href="/room" passHref>
+      <a onClick={() => hangUp()}>
+        <div
+          style={{
+            display: 'flex',
+            alignItems: 'center',
+            justifyContent: 'center',
+            width: '50px',
+            height: '50px',
+            borderRadius: '10px',
+            background: 'rgba(0, 0, 0, 0.56)',
+            color: '#f26b4d',
+          }}
+        >
+          <FontAwesomeIcon icon={faSignOutAlt} size="lg" />
+        </div>
+      </a>
+    </Link>
   );
 };
 
