@@ -20,6 +20,7 @@ type ClientToServerEvents = {
   'connection answer': (payload: PeerConnectionAnswerPayload) => void;
   'ice-candidate': (payload: IceCandidatePayload) => void;
   'someone is laughing': (roomID: string) => void;
+  disconnecting: () => void;
 };
 
 type PeerConnectionRequest = {
@@ -52,9 +53,7 @@ type ReceiveIceCandidateEvent = {
   from: string;
 };
 
-const socket: Socket<ServerToClientEvents, ClientToServerEvents> = io(
-  process.env.NEXT_PUBLIC_SIGNALING_SERVER
-).connect();
+let socket: Socket<ServerToClientEvents, ClientToServerEvents>;
 let peers = new Map<string, RTCPeerConnection>();
 let userStream: MediaStream;
 let remoteUserStreams = new Map<string, MediaStream>();
@@ -221,6 +220,12 @@ const handleTrackEvent = (event: RTCTrackEvent, userID: string) => {
  * @param {string} userID ユーザID
  */
 const handleDisconnect = (userID: string) => {
+  const peer = peers.get(userID);
+  if (!peer) {
+    console.error('Cannot find peer. userID:' + userID);
+    return;
+  }
+  peer.close();
   peers.delete(userID);
   remoteUserStreams.delete(userID);
   setRemoteUserStreams(Array.from(remoteUserStreams.values()));
@@ -254,21 +259,39 @@ const handleToggleAudio = (): boolean => {
   return audioTrack.enabled;
 };
 
+const hangUp = () => {
+  // stop cam
+  userStream.getTracks().forEach((track) => {
+    track.stop();
+  });
+
+  peers.clear();
+  remoteUserStreams.clear();
+
+  socket.disconnect();
+};
+
+const someoneLaugh = (roomID: string) => {
+  socket.emit('someone is laughing', roomID);
+};
+
 const setupRTC = async (
   roomID: string,
   localVideo: HTMLVideoElement,
-  setRemoteStreams: Dispatch<SetStateAction<MediaStream[]>>
+  setRemoteStreams: Dispatch<SetStateAction<MediaStream[]>>,
+  someoneLaughFunc: () => void
 ) => {
   setRemoteUserStreams = setRemoteStreams;
 
   // Strat to get user media
   const localStream = await navigator.mediaDevices.getUserMedia({
     video: true,
-    audio: true,
+    audio: false,
   });
   userStream = localStream;
   localVideo.srcObject = localStream;
 
+  socket = io(process.env.NEXT_PUBLIC_SIGNALING_SERVER).connect();
   // user joined room
   socket.emit('user joined room', roomID);
 
@@ -288,6 +311,8 @@ const setupRTC = async (
   socket.on('user disconnected', (userID) => handleDisconnect(userID));
 
   socket.on('server is full', () => alert('chat is full'));
+
+  socket.on('someone is laughing', someoneLaughFunc);
 };
 
 const startScreenSharing = async (screenVideo: HTMLVideoElement) => {
@@ -302,5 +327,6 @@ export {
   startScreenSharing,
   handleToggleCam,
   handleToggleAudio,
-  socket,
+  hangUp,
+  someoneLaugh,
 };

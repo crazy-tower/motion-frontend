@@ -15,7 +15,7 @@ const Page: NextPage = () => {
         <h1 className={styles.title}>Welcome to Motion!</h1>
 
         <Signin />
-        <Link href="/room">
+        <Link href="/room" passHref>
           <a className={styles.description}>Go to Room! &rarr;</a>
         </Link>
       </main>

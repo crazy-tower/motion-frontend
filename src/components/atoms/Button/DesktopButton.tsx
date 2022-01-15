@@ -38,7 +38,7 @@ const DesktopButton: NextPage<Props> = ({ screenVideoRef }) => {
             color: 'white',
           }}
         >
-          <FontAwesomeIcon icon={faDesktop} />
+          <FontAwesomeIcon icon={faDesktop} size="lg" />
         </div>
       ) : (
         <div
@@ -53,7 +53,7 @@ const DesktopButton: NextPage<Props> = ({ screenVideoRef }) => {
             color: '#f26b4d',
           }}
         >
-          <FontAwesomeIcon icon={faDesktop} />
+          <FontAwesomeIcon icon={faDesktop} size="lg" />
         </div>
       )}
     </button>

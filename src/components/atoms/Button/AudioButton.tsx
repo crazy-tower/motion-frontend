@@ -25,7 +25,7 @@ const AudioButton: NextPage = () => {
             color: 'white',
           }}
         >
-          <FontAwesomeIcon icon={faMicrophone} />
+          <FontAwesomeIcon icon={faMicrophone} size="lg" />
         </div>
       ) : (
         <div

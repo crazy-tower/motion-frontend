@@ -22,7 +22,7 @@ const CamButton: NextPage = () => {
             color: 'white',
           }}
         >
-          <FontAwesomeIcon icon={faVideo} />
+          <FontAwesomeIcon icon={faVideo} size="lg" />
         </div>
       ) : (
         <div
@@ -37,7 +37,7 @@ const CamButton: NextPage = () => {
             color: 'white',
           }}
         >
-          <FontAwesomeIcon icon={faVideoSlash} />
+          <FontAwesomeIcon icon={faVideoSlash} size="lg" />
         </div>
       )}
     </button>
