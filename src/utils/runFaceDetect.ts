@@ -14,7 +14,7 @@ const runFaceDetect = async (
     ]);
   };
   await loadModels();
-  console.log('facemodel loaded');
+  // console.log('facemodel loaded');
 
   setInterval(async () => {
     if (
@@ -45,7 +45,7 @@ const runFaceDetect = async (
         .withFaceLandmarks()
         .withFaceExpressions();
 
-      console.log(detectionsWithExpressions);
+      // console.log(detectionsWithExpressions);
 
       if (detectionsWithExpressions) {
         const resizeDetections = faceapi.resizeResults(
