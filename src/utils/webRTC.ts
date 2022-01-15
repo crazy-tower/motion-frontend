@@ -286,7 +286,7 @@ const setupRTC = async (
   // Strat to get user media
   const localStream = await navigator.mediaDevices.getUserMedia({
     video: true,
-    audio: false,
+    audio: true,
   });
   userStream = localStream;
   localVideo.srcObject = localStream;
