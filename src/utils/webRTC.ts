@@ -259,6 +259,9 @@ const handleToggleAudio = (): boolean => {
   return audioTrack.enabled;
 };
 
+/**
+ * 通話を切る
+ */
 const hangUp = () => {
   // stop cam
   userStream.getTracks().forEach((track) => {

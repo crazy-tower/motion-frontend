@@ -28,7 +28,7 @@ const Page: NextPage = () => {
       </Head>
 
       <Wrapper>
-        <Heading as="h1" size="2xl" marginY="3">
+        <Heading as="h1" size="2xl" color="gray.200" marginY="3">
           Join room
         </Heading>
 
