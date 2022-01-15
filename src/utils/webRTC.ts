@@ -297,4 +297,10 @@ const startScreenSharing = async (screenVideo: HTMLVideoElement) => {
   screenVideo.srcObject = screenStream;
 };
 
-export { setupRTC, startScreenSharing, handleToggleCam, handleToggleAudio, socket };
+export {
+  setupRTC,
+  startScreenSharing,
+  handleToggleCam,
+  handleToggleAudio,
+  socket,
+};
