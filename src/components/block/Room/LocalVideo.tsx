@@ -22,6 +22,12 @@ const LocalVideo: NextPage<Props> = ({ localVideoRef }) => {
         autoPlay
         playsInline
         muted
+        style={{
+          width: '500px',
+          height: '400px',
+          objectFit: 'cover',
+          borderRadius: '8px',
+        }}
         // onLoadedData={() => {
         //   runHandpose(localVideoRef, handCanvasRef);
         //   runFaceDetect(localVideoRef, faceCanvasRef);

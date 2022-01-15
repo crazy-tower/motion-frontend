@@ -22,8 +22,6 @@ const RemoteVideo: NextPage<Props> = ({ stream }) => {
     <div
       style={{
         position: 'relative',
-        width: '500px',
-        height: '400px',
       }}
     >
       <video
@@ -34,7 +32,12 @@ const RemoteVideo: NextPage<Props> = ({ stream }) => {
         //   runHandpose(remoteVideoRef, handCanvasRef);
         //   runFaceDetect(remoteVideoRef, faceCanvasRef);
         // }}
-        style={{}}
+        style={{
+          width: '500px',
+          height: '400px',
+          objectFit: 'cover',
+          borderRadius: '8px',
+        }}
       ></video>
 
       <canvas

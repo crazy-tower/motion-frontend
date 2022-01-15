@@ -1,7 +1,7 @@
 import type { NextPage } from 'next';
 import { useEffect, useRef, useState } from 'react';
-import { setupRTC } from '../../utils/webRTC';
-import OperationButtons from './OperationButtons';
+import { setupRTC } from '../../../utils/webRTC';
+import Buttons from './Buttons';
 import LocalVideo from './LocalVideo';
 import RemoteVideo from './RemoteVideo';
 
@@ -12,6 +12,7 @@ type Props = {
 const Room: NextPage<Props> = ({ room }) => {
   const localVideoRef = useRef<HTMLVideoElement>(null);
   const [remoteStreams, setRemoteStreams] = useState<Array<MediaStream>>([]);
+  const screenVideoRef = useRef<HTMLVideoElement>(null);
 
   useEffect(() => {
     if (!localVideoRef.current) return;
@@ -28,6 +29,8 @@ const Room: NextPage<Props> = ({ room }) => {
           display: 'flex',
           flexWrap: 'wrap',
           justifyContent: 'center',
+          columnGap: '12px',
+          rowGap: '12px',
         }}
       >
         <div
@@ -43,7 +46,7 @@ const Room: NextPage<Props> = ({ room }) => {
           return <RemoteVideo key={i} stream={stream} />;
         })}
       </div>
-      <OperationButtons />
+      <Buttons screenVideoRef={screenVideoRef} />
     </>
   );
 };
