@@ -4,6 +4,7 @@ import { setupRTC } from '../../../utils/webRTC';
 import Buttons from './Buttons';
 import LocalVideo from './LocalVideo';
 import RemoteVideo from './RemoteVideo';
+import { socket } from '../../../utils/webRTC';
 
 type Props = {
   room: string;
@@ -18,6 +19,7 @@ const Room: NextPage<Props> = ({ room }) => {
     if (!localVideoRef.current) return;
 
     setupRTC(room, localVideoRef.current, setRemoteStreams);
+    // setupFaceMotionSocket()
   }, [room]);
 
   return (
@@ -46,6 +48,13 @@ const Room: NextPage<Props> = ({ room }) => {
           return <RemoteVideo key={i} stream={stream} />;
         })}
       </div>
+      <button
+        onClick={() => {
+          socket.emit('someone is laughing', room);
+        }}
+      >
+        laugh
+      </button>
       <Buttons screenVideoRef={screenVideoRef} />
     </>
   );
