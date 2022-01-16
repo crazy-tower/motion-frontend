@@ -1,7 +1,7 @@
 import { Dispatch, SetStateAction } from 'react';
 import { io, Socket } from 'socket.io-client';
 
-// Type
+/* Type */
 
 // https://socket.io/docs/v4/typescript/
 type ServerToClientEvents = {
@@ -53,11 +53,16 @@ type ReceiveIceCandidateEvent = {
   from: string;
 };
 
+/* Global Variables */
+
 let socket: Socket<ServerToClientEvents, ClientToServerEvents>;
 let peers = new Map<string, RTCPeerConnection>();
 let userStream: MediaStream;
 let remoteUserStreams = new Map<string, MediaStream>();
 let setRemoteUserStreams: Dispatch<SetStateAction<MediaStream[]>>;
+let screenStream: MediaStream;
+
+/* Functions */
 
 /**
  * 部屋に入っている他のユーザにPeerConnectionを繋ぐ
@@ -210,7 +215,6 @@ const handleReceiveIceCandidate = ({
  * @param {string} userID Peer先のユーザID
  */
 const handleTrackEvent = (event: RTCTrackEvent, userID: string) => {
-  console.log('Add track from userID:' + userID);
   remoteUserStreams.set(userID, event.streams[0]);
   setRemoteUserStreams(Array.from(remoteUserStreams.values()));
 };
@@ -278,6 +282,62 @@ const someoneLaugh = (roomID: string) => {
   socket.emit('someone is laughing', roomID);
 };
 
+/**
+ * スクリーンシェアを始める
+ * @param {HTMLVideoElement} localVideo ローカルビデオ
+ * @param {Dispatch<SetStateAction<boolean>>} setScreenShared スクリーンシェアをしているか管理しているステートフック
+ */
+const startScreenSharing = async (
+  localVideo: HTMLVideoElement,
+  setScreenShared: Dispatch<SetStateAction<boolean>>
+) => {
+  const stream = await navigator.mediaDevices.getDisplayMedia({
+    video: true,
+  });
+  screenStream = stream;
+  localVideo.srcObject = stream;
+
+  const screenTrack = stream.getTracks()[0];
+  peers.forEach((peer) => {
+    const senders = peer.getSenders();
+    const userTrack = senders.find((sender) => sender.track?.kind === 'video');
+    if (userTrack) {
+      userTrack.replaceTrack(screenTrack);
+    }
+  });
+
+  // UIで画面キャプチャをやめた場合
+  screenTrack.onended = () => {
+    stopScreenSharing(localVideo, setScreenShared);
+  };
+};
+
+/**
+ * スクリーンシェアを止める
+ * @param {HTMLVideoElement} localVideo ローカルビデオ
+ * @param {Dispatch<SetStateAction<boolean>>} setScreenShared スクリーンシェアをしているか管理しているステートフック
+ */
+const stopScreenSharing = (
+  localVideo: HTMLVideoElement,
+  setScreenShared: Dispatch<SetStateAction<boolean>>
+) => {
+  // リモートの画面をユーザストリームに変える
+  peers.forEach((peer) => {
+    const senders = peer.getSenders();
+    const userTrack = senders.find((sender) => sender.track?.kind === 'video');
+    if (userTrack) {
+      userTrack.replaceTrack(userStream.getVideoTracks()[0]);
+    }
+  });
+
+  localVideo.srcObject = userStream;
+
+  // スクリーンキャプチャを止める
+  screenStream.getTracks().forEach((track) => track.stop());
+
+  setScreenShared(false);
+};
+
 const setupRTC = async (
   roomID: string,
   localVideo: HTMLVideoElement,
@@ -289,7 +349,7 @@ const setupRTC = async (
   // Strat to get user media
   const localStream = await navigator.mediaDevices.getUserMedia({
     video: true,
-    audio: true,
+    audio: false,
   });
   userStream = localStream;
   localVideo.srcObject = localStream;
@@ -318,16 +378,10 @@ const setupRTC = async (
   socket.on('someone is laughing', someoneLaughFunc);
 };
 
-const startScreenSharing = async (screenVideo: HTMLVideoElement) => {
-  const screenStream = await navigator.mediaDevices.getDisplayMedia({
-    video: true,
-  });
-  screenVideo.srcObject = screenStream;
-};
-
 export {
   setupRTC,
   startScreenSharing,
+  stopScreenSharing,
   handleToggleCam,
   handleToggleAudio,
   hangUp,

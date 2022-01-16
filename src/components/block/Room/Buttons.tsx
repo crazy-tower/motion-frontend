@@ -14,7 +14,7 @@ import {
 } from '../../atoms/Button/index';
 
 type Props = {
-  screenVideoRef: RefObject<HTMLVideoElement>;
+  localVideoRef: RefObject<HTMLVideoElement>;
   faceDetectObject: FaceDetect;
   faceMotionEnabled: boolean;
   setFaceMotionEnabled: Dispatch<SetStateAction<boolean>>;
@@ -24,7 +24,7 @@ type Props = {
 };
 
 const Buttons: NextPage<Props> = ({
-  screenVideoRef,
+  localVideoRef,
   faceDetectObject,
   faceMotionEnabled,
   setFaceMotionEnabled,
@@ -53,7 +53,7 @@ const Buttons: NextPage<Props> = ({
       >
         <CamButton />
         <AudioButton />
-        <DesktopButton screenVideoRef={screenVideoRef} />
+        <DesktopButton localVideoRef={localVideoRef} />
         <ChatButton />
         <PeopleButton />
         <FaceMotionButton
