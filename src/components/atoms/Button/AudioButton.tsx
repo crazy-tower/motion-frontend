@@ -6,6 +6,7 @@ import {
 } from '@fortawesome/free-solid-svg-icons';
 import { handleToggleAudio } from '../../../utils/webRTC';
 import { useState } from 'react';
+import Text from './Text';
 
 const AudioButton: NextPage = () => {
   const [audioEnabled, setAudioEnabled] = useState<boolean>(true);
@@ -43,6 +44,7 @@ const AudioButton: NextPage = () => {
           <FontAwesomeIcon icon={faMicrophoneSlash} size="lg" />
         </div>
       )}
+      <Text>Mic</Text>
     </button>
   );
 };

@@ -3,6 +3,7 @@ import { FontAwesomeIcon } from '@fortawesome/react-fontawesome';
 import { faVideo, faVideoSlash } from '@fortawesome/free-solid-svg-icons';
 import { handleToggleCam } from '../../../utils/webRTC';
 import { useState } from 'react';
+import Text from './Text';
 
 const CamButton: NextPage = () => {
   const [camEnabled, setCamEnabled] = useState<boolean>(true);
@@ -40,6 +41,7 @@ const CamButton: NextPage = () => {
           <FontAwesomeIcon icon={faVideoSlash} size="lg" />
         </div>
       )}
+      <Text>Cam</Text>
     </button>
   );
 };

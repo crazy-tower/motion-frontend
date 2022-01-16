@@ -17,9 +17,10 @@ const Buttons: NextPage<Props> = ({ screenVideoRef }) => {
   return (
     <div
       style={{
+        width: '100%',
         display: 'flex',
         flexFlow: 'row nowrap',
-        margin: '0 auto',
+        margin: '1rem auto',
       }}
     >
       <div
@@ -29,6 +30,7 @@ const Buttons: NextPage<Props> = ({ screenVideoRef }) => {
           display: 'grid',
           gridGap: '12px',
           gridAutoFlow: 'column',
+          overflow: 'scroll',
         }}
       >
         <CamButton />

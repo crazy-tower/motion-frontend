@@ -2,8 +2,23 @@ import type { NextPage } from 'next';
 import Head from 'next/head';
 import Room from '../components/block/Room';
 import Header from '../components/block/Layout/Header';
-import styles from '../styles/Home.module.css';
 import { useRouter } from 'next/router';
+import styled from 'styled-components';
+
+const Layout = styled.div`
+  min-height: 100vh;
+  padding: 0 2rem;
+  background-color: ${(props) => props.theme.bgGreen};
+`;
+
+const Wrapper = styled.div`
+  padding: 2rem 0;
+  flex: 1;
+  display: flex;
+  flex-direction: column;
+  justify-content: center;
+  align-items: center;
+`;
 
 const Page: NextPage = () => {
   const router = useRouter();
@@ -16,12 +31,12 @@ const Page: NextPage = () => {
       <Head>
         <title>Room | motion</title>
       </Head>
-      <div className={styles.container}>
+      <Layout>
         <Header />
-        <main className={styles.main}>
+        <Wrapper>
           <Room room={room} />
-        </main>
-      </div>
+        </Wrapper>
+      </Layout>
     </>
   );
 };

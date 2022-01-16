@@ -2,6 +2,7 @@ import { faDesktop } from '@fortawesome/free-solid-svg-icons';
 import { FontAwesomeIcon } from '@fortawesome/react-fontawesome';
 import type { NextPage } from 'next';
 import { RefObject, useState } from 'react';
+import Text from './Text';
 
 type Props = {
   screenVideoRef: RefObject<HTMLVideoElement>;
@@ -56,6 +57,7 @@ const DesktopButton: NextPage<Props> = ({ screenVideoRef }) => {
           <FontAwesomeIcon icon={faDesktop} size="lg" />
         </div>
       )}
+      <Text>Share</Text>
     </button>
   );
 };
