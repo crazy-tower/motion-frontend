@@ -41,20 +41,12 @@ const Room: NextPage<Props> = ({ room }) => {
           rowGap: '12px',
         }}
       >
-        <div
-          style={{
-            position: 'relative',
-            width: '500px',
-            height: '400px',
-          }}
-        >
-          <LocalVideo localVideoRef={localVideoRef} room={room} />
-        </div>
+        <LocalVideo localVideoRef={localVideoRef} room={room} />
         {remoteStreams.map((stream, i) => {
           return <RemoteVideo key={i} stream={stream} />;
         })}
       </div>
-      {happyEffect ? <FontAwesomeIcon icon={faSmileBeam} /> : null}
+      {happyEffect && <FontAwesomeIcon icon={faSmileBeam} />}
       <Buttons screenVideoRef={screenVideoRef} />
     </>
   );
