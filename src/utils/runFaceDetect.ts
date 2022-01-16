@@ -5,7 +5,7 @@ import { someoneLaugh } from './webRTC';
 const thresholdHappy = 0.9;
 
 class FaceDetect {
-  private setIV: number | null;
+  private static setIV: number | null;
   private localVideoRef: RefObject<HTMLVideoElement>;
   private localCanvasRef: RefObject<HTMLCanvasElement>;
   private room: string;
@@ -18,26 +18,22 @@ class FaceDetect {
     this.localVideoRef = localVideoRef;
     this.localCanvasRef = localCanvasRef;
     this.room = room;
-    this.setIV = null;
+    FaceDetect.setIV = null;
   }
-  setSetIV(setIV: number) {
-    this.setIV = setIV;
+  static async setSetIV(setIV: number) {
+    FaceDetect.setIV = setIV;
   }
 
-  handleToggleFaceMotion(faceMotionEnabled: Boolean) {
+  async handleToggleFaceMotion(faceMotionEnabled: Boolean) {
     if (faceMotionEnabled) {
-      console.log(faceMotionEnabled);
-      if (this.setIV) {
-        console.log(this.setIV);
-        clearInterval(this.setIV);
+      if (FaceDetect.setIV) {
+        clearInterval(FaceDetect.setIV);
+        FaceDetect.setIV = null;
       }
-      this.setIV = null;
-      return false;
     } else {
-      if (this.setIV == null) {
-        this.runFaceDetect();
+      if (FaceDetect.setIV == null) {
+        await this.runFaceDetect();
       }
-      return true;
     }
   }
 
@@ -51,7 +47,6 @@ class FaceDetect {
       ]);
     };
     await loadModels();
-    // console.log('facemodel loaded');
 
     const IV = window.setInterval(async () => {
       if (
@@ -82,8 +77,6 @@ class FaceDetect {
           .withFaceLandmarks()
           .withFaceExpressions();
 
-        // console.log(detectionsWithExpressions);
-
         if (detectionsWithExpressions) {
           const resizeDetections = faceapi.resizeResults(
             detectionsWithExpressions,
@@ -103,8 +96,7 @@ class FaceDetect {
         }
       }
     }, 10);
-    console.log(IV);
-    this.setSetIV(IV);
+    await FaceDetect.setSetIV(IV);
   }
 }
 

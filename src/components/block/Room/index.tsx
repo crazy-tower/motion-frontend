@@ -19,7 +19,7 @@ const Room: NextPage<Props> = ({ room }) => {
   const screenVideoRef = useRef<HTMLVideoElement>(null);
   const [happyEffect, setHappyEffect] = useState<Boolean>(false);
   const faceDetectObject = new FaceDetect(localVideoRef, faceCanvasRef, room);
-  const [faceMotionEnabled, setFaceMotionEnabled] = useState<boolean>(true);
+  const [faceMotionEnabled, setFaceMotionEnabled] = useState<boolean>(false);
 
   useEffect(() => {
     if (!localVideoRef.current) return;
@@ -31,8 +31,6 @@ const Room: NextPage<Props> = ({ room }) => {
       }, 3000);
     });
   }, [room]);
-
-  faceDetectObject.runFaceDetect();
 
   return (
     <>

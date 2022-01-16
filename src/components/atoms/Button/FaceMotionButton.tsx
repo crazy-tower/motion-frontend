@@ -20,11 +20,10 @@ const FaceMotionButton: NextPage<Props> = ({
 }) => {
   return (
     <button
-      onClick={() =>
-        setFaceMotionEnabled(
-          faceDetectObject.handleToggleFaceMotion(faceMotionEnabled)
-        )
-      }
+      onClick={() => {
+        faceDetectObject.handleToggleFaceMotion(faceMotionEnabled);
+        setFaceMotionEnabled(!faceMotionEnabled);
+      }}
     >
       {faceMotionEnabled ? (
         <div
