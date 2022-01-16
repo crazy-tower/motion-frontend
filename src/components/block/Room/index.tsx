@@ -59,9 +59,22 @@ const Room: NextPage<Props> = ({ room }) => {
         {remoteStreams.map((stream, i) => {
           return <RemoteVideo key={i} stream={stream} />;
         })}
+        <video
+          ref={screenVideoRef}
+          autoPlay
+          playsInline
+          muted
+          style={{
+            width: '600px',
+            height: '500px',
+            objectFit: 'cover',
+            borderRadius: '8px',
+          }}
+        />
       </div>
       {happyEffect && <FontAwesomeIcon icon={faSmileBeam} />}
       <Buttons
+        roomID={room}
         screenVideoRef={screenVideoRef}
         faceDetectObject={faceDetectObject}
         faceMotionEnabled={faceMotionEnabled}

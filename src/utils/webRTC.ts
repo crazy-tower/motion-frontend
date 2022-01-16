@@ -9,6 +9,7 @@ type ServerToClientEvents = {
   'connection offer': (event: PeerConnectionOffer) => void;
   'connection answer': (event: PeerConnectionAnswerEvent) => void;
   'ice-candidate': (event: ReceiveIceCandidateEvent) => void;
+  'screen sharing': (otherUsers: string[]) => void;
   'user disconnected': (userID: string) => void;
   'server is full': () => void;
   'someone is laughing': () => void;
@@ -19,6 +20,7 @@ type ClientToServerEvents = {
   'peer connection request': (payload: PeerConnectionRequest) => void;
   'connection answer': (payload: PeerConnectionAnswerPayload) => void;
   'ice-candidate': (payload: IceCandidatePayload) => void;
+  'screen sharing': (roomID: string) => void;
   'someone is laughing': (roomID: string) => void;
   disconnecting: () => void;
 };
@@ -56,6 +58,7 @@ type ReceiveIceCandidateEvent = {
 let socket: Socket<ServerToClientEvents, ClientToServerEvents>;
 let peers = new Map<string, RTCPeerConnection>();
 let userStream: MediaStream;
+let senders: RTCRtpSender[] = [];
 let remoteUserStreams = new Map<string, MediaStream>();
 let setRemoteUserStreams: Dispatch<SetStateAction<MediaStream[]>>;
 
@@ -69,7 +72,7 @@ const callOtherUsers = (otherUsers: string[], localStream: MediaStream) => {
     const peer = createPeer(userIDToCall);
     peers.set(userIDToCall, peer);
     localStream.getTracks().forEach((track) => {
-      peer.addTrack(track, localStream);
+      senders.push(peer.addTrack(track, localStream));
     });
   });
 };
@@ -210,7 +213,6 @@ const handleReceiveIceCandidate = ({
  * @param {string} userID Peer先のユーザID
  */
 const handleTrackEvent = (event: RTCTrackEvent, userID: string) => {
-  console.log('Add track from userID:' + userID);
   remoteUserStreams.set(userID, event.streams[0]);
   setRemoteUserStreams(Array.from(remoteUserStreams.values()));
 };
@@ -289,7 +291,7 @@ const setupRTC = async (
   // Strat to get user media
   const localStream = await navigator.mediaDevices.getUserMedia({
     video: true,
-    audio: true,
+    audio: false,
   });
   userStream = localStream;
   localVideo.srcObject = localStream;
@@ -311,6 +313,8 @@ const setupRTC = async (
 
   socket.on('ice-candidate', handleReceiveIceCandidate);
 
+  // socket.on('screen sharing', handleScreenSharing);
+
   socket.on('user disconnected', (userID) => handleDisconnect(userID));
 
   socket.on('server is full', () => alert('chat is full'));
@@ -319,10 +323,16 @@ const setupRTC = async (
 };
 
 const startScreenSharing = async (screenVideo: HTMLVideoElement) => {
-  const screenStream = await navigator.mediaDevices.getDisplayMedia({
+  const stream = await navigator.mediaDevices.getDisplayMedia({
     video: true,
   });
-  screenVideo.srcObject = screenStream;
+  screenVideo.srcObject = stream;
+
+  const screenTrack = stream.getTracks()[0];
+  const userTrack = senders.find((sender) => sender.track?.kind === 'video');
+  if (userTrack) {
+    userTrack.replaceTrack(screenTrack);
+  }
 };
 
 export {

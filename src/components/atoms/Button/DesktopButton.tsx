@@ -3,27 +3,24 @@ import { FontAwesomeIcon } from '@fortawesome/react-fontawesome';
 import type { NextPage } from 'next';
 import { RefObject, useState } from 'react';
 import Text from './Text';
+import { startScreenSharing } from '../../../utils/webRTC';
 
 type Props = {
+  roomID: string;
   screenVideoRef: RefObject<HTMLVideoElement>;
 };
 
-const DesktopButton: NextPage<Props> = ({ screenVideoRef }) => {
+const DesktopButton: NextPage<Props> = ({ roomID, screenVideoRef }) => {
   const [screenSharingEnabled, setScreenSharingEnabled] =
     useState<boolean>(true);
 
   return (
     <button
       onClick={async () => {
-        navigator.mediaDevices
-          .getDisplayMedia({
-            video: true,
-          })
-          .then((stream) => {
-            if (!screenVideoRef.current) return;
-            screenVideoRef.current.srcObject = stream;
-          });
-        setScreenSharingEnabled(!screenSharingEnabled);
+        if (screenVideoRef.current) {
+          startScreenSharing(screenVideoRef.current);
+          setScreenSharingEnabled(!screenSharingEnabled);
+        }
       }}
     >
       {screenSharingEnabled ? (
