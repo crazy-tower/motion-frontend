@@ -1,12 +1,26 @@
 import { faUserFriends } from '@fortawesome/free-solid-svg-icons';
 import { FontAwesomeIcon } from '@fortawesome/react-fontawesome';
 import type { NextPage } from 'next';
+import Text from './Text';
 
 const PeopleButton: NextPage = () => {
   return (
-    <button className="bg-emerald-900 hover:bg-cyan-900 text-slate-50 font-bold py-2 px-4 rounded-full mx-2">
-      <FontAwesomeIcon icon={faUserFriends} size="lg" />
-      &nbsp; People
+    <button>
+      <div
+        style={{
+          display: 'flex',
+          alignItems: 'center',
+          justifyContent: 'center',
+          width: '50px',
+          height: '50px',
+          borderRadius: '10px',
+          background: 'rgba(0, 0, 0, 0.56)',
+          color: 'white',
+        }}
+      >
+        <FontAwesomeIcon icon={faUserFriends} size="lg" />
+      </div>
+      <Text>People</Text>
     </button>
   );
 };

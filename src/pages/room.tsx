@@ -46,7 +46,7 @@ const Page: NextPage = () => {
         <Link href={`/${room}`}>
           <a>
             <Button colorScheme="blue" marginY={1}>
-              Button
+              Join
             </Button>
           </a>
         </Link>

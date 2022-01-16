@@ -3,6 +3,7 @@ import { FontAwesomeIcon } from '@fortawesome/react-fontawesome';
 import type { NextPage } from 'next';
 import Link from 'next/link';
 import { hangUp } from '../../../utils/webRTC';
+import Text from './Text';
 
 const LeaveButton: NextPage = () => {
   return (
@@ -22,6 +23,7 @@ const LeaveButton: NextPage = () => {
         >
           <FontAwesomeIcon icon={faSignOutAlt} size="lg" />
         </div>
+        <Text>Leave</Text>
       </a>
     </Link>
   );
