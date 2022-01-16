@@ -4,100 +4,72 @@ import { someoneLaugh } from './webRTC';
 
 const thresholdHappy = 0.9;
 
-class FaceDetect {
-  private static setIV: number | null;
-  private localVideoRef: RefObject<HTMLVideoElement>;
-  private localCanvasRef: RefObject<HTMLCanvasElement>;
-  private room: string;
+const runFaceDetect = async (
+  localVideoRef: RefObject<HTMLVideoElement>,
+  localCanvasRef: RefObject<HTMLCanvasElement>,
+  room: string
+) => {
+  const loadModels = async () => {
+    const MODEL_URL = '/models';
+    await Promise.all([
+      faceapi.nets.tinyFaceDetector.load(MODEL_URL),
+      faceapi.nets.faceLandmark68Net.load(MODEL_URL),
+      faceapi.nets.faceExpressionNet.load(MODEL_URL),
+    ]);
+  };
+  await loadModels();
+  // console.log('facemodel loaded');
 
-  constructor(
-    localVideoRef: RefObject<HTMLVideoElement>,
-    localCanvasRef: RefObject<HTMLCanvasElement>,
-    room: string
-  ) {
-    this.localVideoRef = localVideoRef;
-    this.localCanvasRef = localCanvasRef;
-    this.room = room;
-    FaceDetect.setIV = null;
-  }
-  static async setSetIV(setIV: number) {
-    FaceDetect.setIV = setIV;
-  }
+  setInterval(async () => {
+    if (
+      typeof localVideoRef.current !== 'undefined' &&
+      localVideoRef.current !== null &&
+      typeof localCanvasRef.current !== 'undefined' &&
+      localCanvasRef.current !== null
+    ) {
+      // Get Video Properties
+      const video = localVideoRef.current;
+      const canvas = localCanvasRef.current;
 
-  async handleToggleFaceMotion(faceMotionEnabled: Boolean) {
-    if (faceMotionEnabled) {
-      if (FaceDetect.setIV) {
-        clearInterval(FaceDetect.setIV);
-        FaceDetect.setIV = null;
-      }
-    } else {
-      if (FaceDetect.setIV == null) {
-        await this.runFaceDetect();
-      }
-    }
-  }
+      const videoWidth = localVideoRef.current.videoWidth;
+      const videoHeight = localVideoRef.current.videoHeight;
 
-  async runFaceDetect() {
-    const loadModels = async () => {
-      const MODEL_URL = '/models';
-      await Promise.all([
-        faceapi.nets.tinyFaceDetector.load(MODEL_URL),
-        faceapi.nets.faceLandmark68Net.load(MODEL_URL),
-        faceapi.nets.faceExpressionNet.load(MODEL_URL),
-      ]);
-    };
-    await loadModels();
+      localVideoRef.current.width = videoWidth;
+      localVideoRef.current.height = videoHeight;
 
-    const IV = window.setInterval(async () => {
-      if (
-        typeof this.localVideoRef.current !== 'undefined' &&
-        this.localVideoRef.current !== null &&
-        typeof this.localCanvasRef.current !== 'undefined' &&
-        this.localCanvasRef.current !== null
-      ) {
-        // Get Video Properties
-        const video = this.localVideoRef.current;
-        const canvas = this.localCanvasRef.current;
+      // Set canvas height and width
+      localCanvasRef.current.width = videoWidth;
+      localCanvasRef.current.height = videoHeight;
 
-        const videoWidth = this.localVideoRef.current.videoWidth;
-        const videoHeight = this.localVideoRef.current.videoHeight;
+      const displaySize = { width: videoWidth, height: videoHeight };
+      faceapi.matchDimensions(canvas, displaySize);
 
-        this.localVideoRef.current.width = videoWidth;
-        this.localVideoRef.current.height = videoHeight;
+      const detectionsWithExpressions = await faceapi
+        .detectSingleFace(video, new faceapi.TinyFaceDetectorOptions())
+        .withFaceLandmarks()
+        .withFaceExpressions();
 
-        // Set canvas height and width
-        this.localCanvasRef.current.width = videoWidth;
-        this.localCanvasRef.current.height = videoHeight;
+      // console.log(detectionsWithExpressions);
 
-        const displaySize = { width: videoWidth, height: videoHeight };
-        faceapi.matchDimensions(canvas, displaySize);
+      if (detectionsWithExpressions) {
+        const resizeDetections = faceapi.resizeResults(
+          detectionsWithExpressions,
+          displaySize
+        );
+        if (resizeDetections) {
+          faceapi.draw.drawDetections(canvas, resizeDetections);
+          faceapi.draw.drawFaceLandmarks(canvas, resizeDetections);
+          faceapi.draw.drawFaceExpressions(canvas, resizeDetections);
+        }
 
-        const detectionsWithExpressions = await faceapi
-          .detectSingleFace(video, new faceapi.TinyFaceDetectorOptions())
-          .withFaceLandmarks()
-          .withFaceExpressions();
-
-        if (detectionsWithExpressions) {
-          const resizeDetections = faceapi.resizeResults(
-            detectionsWithExpressions,
-            displaySize
-          );
-          if (resizeDetections) {
-            faceapi.draw.drawDetections(canvas, resizeDetections);
-            faceapi.draw.drawFaceLandmarks(canvas, resizeDetections);
-            faceapi.draw.drawFaceExpressions(canvas, resizeDetections);
-          }
-
-          if (
-            detectionsWithExpressions['expressions']['happy'] > thresholdHappy
-          ) {
-            someoneLaugh(this.room);
-          }
+        if (
+          detectionsWithExpressions['expressions']['happy'] > thresholdHappy
+        ) {
+          someoneLaugh(room);
         }
       }
-    }, 10);
-    await FaceDetect.setSetIV(IV);
-  }
-}
+    }
+  }, 10);
+};
 
-export { FaceDetect };
+export { runFaceDetect };

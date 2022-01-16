@@ -1,21 +1,17 @@
 import { NextPage } from 'next';
-import { RefObject } from 'react';
+import { RefObject, useRef } from 'react';
+import { runFaceDetect } from '../../../utils/runFaceDetect';
+// import { runHandpose } from '../../../utils/runHandpose';
 
 type Props = {
   localVideoRef: RefObject<HTMLVideoElement>;
-  faceCanvasRef: RefObject<HTMLCanvasElement>;
-  faceMotionEnabled: boolean;
-  handCanvasRef: RefObject<HTMLCanvasElement>;
-  handMotionEnabled: boolean;
+  room: string;
 };
 
-const LocalVideo: NextPage<Props> = ({
-  localVideoRef,
-  faceCanvasRef,
-  faceMotionEnabled,
-  handCanvasRef,
-  handMotionEnabled,
-}) => {
+const LocalVideo: NextPage<Props> = ({ localVideoRef, room }) => {
+  const handCanvasRef = useRef<HTMLCanvasElement>(null);
+  const faceCanvasRef = useRef<HTMLCanvasElement>(null);
+
   return (
     <div
       style={{
@@ -33,31 +29,31 @@ const LocalVideo: NextPage<Props> = ({
           objectFit: 'cover',
           borderRadius: '8px',
         }}
+        onLoadedData={() => {
+          // runHandpose(localVideoRef, handCanvasRef);
+          runFaceDetect(localVideoRef, faceCanvasRef, room);
+        }}
       ></video>
-      {handMotionEnabled ? (
-        <canvas
-          ref={handCanvasRef}
-          style={{
-            position: 'absolute',
-            top: 0,
-            left: 0,
-            width: '100%',
-            height: '100%',
-          }}
-        />
-      ) : null}
-      {faceMotionEnabled ? (
-        <canvas
-          ref={faceCanvasRef}
-          style={{
-            position: 'absolute',
-            left: 0,
-            top: 0,
-            width: '100%',
-            height: '100%',
-          }}
-        />
-      ) : null}
+      <canvas
+        ref={handCanvasRef}
+        style={{
+          position: 'absolute',
+          top: 0,
+          left: 0,
+          width: '100%',
+          height: '100%',
+        }}
+      />
+      <canvas
+        ref={faceCanvasRef}
+        style={{
+          position: 'absolute',
+          left: 0,
+          top: 0,
+          width: '100%',
+          height: '100%',
+        }}
+      />
     </div>
   );
 };
