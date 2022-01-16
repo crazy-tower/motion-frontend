@@ -3,6 +3,7 @@ import { FontAwesomeIcon } from '@fortawesome/react-fontawesome';
 import { faHandPeace, faSlash } from '@fortawesome/free-solid-svg-icons';
 import { Dispatch, SetStateAction } from 'react';
 import type { HandDetect } from '../../../utils/runHandpose';
+import Text from './Text';
 
 type Props = {
   handDetectObject: HandDetect;
@@ -55,6 +56,7 @@ const HandMotionButton: NextPage<Props> = ({
           <FontAwesomeIcon icon={faSlash} size="lg" />
         </div>
       )}
+      <Text>HandM</Text>
     </button>
   );
 };

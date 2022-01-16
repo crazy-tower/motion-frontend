@@ -3,6 +3,7 @@ import { FontAwesomeIcon } from '@fortawesome/react-fontawesome';
 import { faSmileWink, faSlash } from '@fortawesome/free-solid-svg-icons';
 import { Dispatch, SetStateAction } from 'react';
 import type { FaceDetect } from '../../../utils/runFaceDetect';
+import Text from './Text';
 
 type Props = {
   faceDetectObject: FaceDetect;
@@ -55,6 +56,7 @@ const FaceMotionButton: NextPage<Props> = ({
           <FontAwesomeIcon icon={faSlash} size="lg" />
         </div>
       )}
+      <Text>FaceM</Text>
     </button>
   );
 };
