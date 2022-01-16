@@ -17,7 +17,7 @@ const Page: NextPage = () => {
 
     try {
       const res = await fetch(
-        process.env.NEXT_PUBLIC_SIGNALING_SERVER + '/signup',
+        process.env.NEXT_PUBLIC_BACKEND_SERVER + '/signup',
         {
           method: 'POST',
           headers: {
