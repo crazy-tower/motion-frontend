@@ -1,7 +1,7 @@
 import { Dispatch, SetStateAction } from 'react';
 import { io, Socket } from 'socket.io-client';
 
-// Type
+/* Type */
 
 // https://socket.io/docs/v4/typescript/
 type ServerToClientEvents = {
@@ -9,7 +9,6 @@ type ServerToClientEvents = {
   'connection offer': (event: PeerConnectionOffer) => void;
   'connection answer': (event: PeerConnectionAnswerEvent) => void;
   'ice-candidate': (event: ReceiveIceCandidateEvent) => void;
-  'screen sharing': (otherUsers: string[]) => void;
   'user disconnected': (userID: string) => void;
   'server is full': () => void;
   'someone is laughing': () => void;
@@ -20,7 +19,6 @@ type ClientToServerEvents = {
   'peer connection request': (payload: PeerConnectionRequest) => void;
   'connection answer': (payload: PeerConnectionAnswerPayload) => void;
   'ice-candidate': (payload: IceCandidatePayload) => void;
-  'screen sharing': (roomID: string) => void;
   'someone is laughing': (roomID: string) => void;
   disconnecting: () => void;
 };
@@ -55,12 +53,16 @@ type ReceiveIceCandidateEvent = {
   from: string;
 };
 
+/* Global Variables */
+
 let socket: Socket<ServerToClientEvents, ClientToServerEvents>;
 let peers = new Map<string, RTCPeerConnection>();
 let userStream: MediaStream;
-let senders: RTCRtpSender[] = [];
 let remoteUserStreams = new Map<string, MediaStream>();
 let setRemoteUserStreams: Dispatch<SetStateAction<MediaStream[]>>;
+let screenStream: MediaStream;
+
+/* Functions */
 
 /**
  * 部屋に入っている他のユーザにPeerConnectionを繋ぐ
@@ -72,7 +74,7 @@ const callOtherUsers = (otherUsers: string[], localStream: MediaStream) => {
     const peer = createPeer(userIDToCall);
     peers.set(userIDToCall, peer);
     localStream.getTracks().forEach((track) => {
-      senders.push(peer.addTrack(track, localStream));
+      peer.addTrack(track, localStream);
     });
   });
 };
@@ -280,6 +282,62 @@ const someoneLaugh = (roomID: string) => {
   socket.emit('someone is laughing', roomID);
 };
 
+/**
+ * スクリーンシェアを始める
+ * @param {HTMLVideoElement} localVideo ローカルビデオ
+ * @param {Dispatch<SetStateAction<boolean>>} setScreenShared スクリーンシェアをしているか管理しているステートフック
+ */
+const startScreenSharing = async (
+  localVideo: HTMLVideoElement,
+  setScreenShared: Dispatch<SetStateAction<boolean>>
+) => {
+  const stream = await navigator.mediaDevices.getDisplayMedia({
+    video: true,
+  });
+  screenStream = stream;
+  localVideo.srcObject = stream;
+
+  const screenTrack = stream.getTracks()[0];
+  peers.forEach((peer) => {
+    const senders = peer.getSenders();
+    const userTrack = senders.find((sender) => sender.track?.kind === 'video');
+    if (userTrack) {
+      userTrack.replaceTrack(screenTrack);
+    }
+  });
+
+  // UIで画面キャプチャをやめた場合
+  screenTrack.onended = () => {
+    stopScreenSharing(localVideo, setScreenShared);
+  };
+};
+
+/**
+ * スクリーンシェアを止める
+ * @param {HTMLVideoElement} localVideo ローカルビデオ
+ * @param {Dispatch<SetStateAction<boolean>>} setScreenShared スクリーンシェアをしているか管理しているステートフック
+ */
+const stopScreenSharing = (
+  localVideo: HTMLVideoElement,
+  setScreenShared: Dispatch<SetStateAction<boolean>>
+) => {
+  // リモートの画面をユーザストリームに変える
+  peers.forEach((peer) => {
+    const senders = peer.getSenders();
+    const userTrack = senders.find((sender) => sender.track?.kind === 'video');
+    if (userTrack) {
+      userTrack.replaceTrack(userStream.getVideoTracks()[0]);
+    }
+  });
+
+  localVideo.srcObject = userStream;
+
+  // スクリーンキャプチャを止める
+  screenStream.getTracks().forEach((track) => track.stop());
+
+  setScreenShared(false);
+};
+
 const setupRTC = async (
   roomID: string,
   localVideo: HTMLVideoElement,
@@ -313,8 +371,6 @@ const setupRTC = async (
 
   socket.on('ice-candidate', handleReceiveIceCandidate);
 
-  // socket.on('screen sharing', handleScreenSharing);
-
   socket.on('user disconnected', (userID) => handleDisconnect(userID));
 
   socket.on('server is full', () => alert('chat is full'));
@@ -322,22 +378,10 @@ const setupRTC = async (
   socket.on('someone is laughing', someoneLaughFunc);
 };
 
-const startScreenSharing = async (screenVideo: HTMLVideoElement) => {
-  const stream = await navigator.mediaDevices.getDisplayMedia({
-    video: true,
-  });
-  screenVideo.srcObject = stream;
-
-  const screenTrack = stream.getTracks()[0];
-  const userTrack = senders.find((sender) => sender.track?.kind === 'video');
-  if (userTrack) {
-    userTrack.replaceTrack(screenTrack);
-  }
-};
-
 export {
   setupRTC,
   startScreenSharing,
+  stopScreenSharing,
   handleToggleCam,
   handleToggleAudio,
   hangUp,

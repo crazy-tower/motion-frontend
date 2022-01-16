@@ -3,27 +3,28 @@ import { FontAwesomeIcon } from '@fortawesome/react-fontawesome';
 import type { NextPage } from 'next';
 import { RefObject, useState } from 'react';
 import Text from './Text';
-import { startScreenSharing } from '../../../utils/webRTC';
+import { startScreenSharing, stopScreenSharing } from '../../../utils/webRTC';
 
 type Props = {
-  roomID: string;
-  screenVideoRef: RefObject<HTMLVideoElement>;
+  localVideoRef: RefObject<HTMLVideoElement>;
 };
 
-const DesktopButton: NextPage<Props> = ({ roomID, screenVideoRef }) => {
-  const [screenSharingEnabled, setScreenSharingEnabled] =
-    useState<boolean>(true);
+const DesktopButton: NextPage<Props> = ({ localVideoRef }) => {
+  const [screenShared, setScreenShared] = useState<boolean>(false);
 
   return (
     <button
       onClick={async () => {
-        if (screenVideoRef.current) {
-          startScreenSharing(screenVideoRef.current);
-          setScreenSharingEnabled(!screenSharingEnabled);
+        if (!localVideoRef.current) return;
+        if (screenShared) {
+          stopScreenSharing(localVideoRef.current, setScreenShared);
+        } else {
+          startScreenSharing(localVideoRef.current, setScreenShared);
         }
+        setScreenShared(!screenShared);
       }}
     >
-      {screenSharingEnabled ? (
+      {screenShared ? (
         <div
           style={{
             display: 'flex',
@@ -33,7 +34,7 @@ const DesktopButton: NextPage<Props> = ({ roomID, screenVideoRef }) => {
             height: '50px',
             borderRadius: '10px',
             background: 'rgba(0, 0, 0, 0.56)',
-            color: 'white',
+            color: '#f26b4d',
           }}
         >
           <FontAwesomeIcon icon={faDesktop} size="lg" />
@@ -48,7 +49,7 @@ const DesktopButton: NextPage<Props> = ({ roomID, screenVideoRef }) => {
             height: '50px',
             borderRadius: '10px',
             background: 'rgba(0, 0, 0, 0.56)',
-            color: '#f26b4d',
+            color: 'white',
           }}
         >
           <FontAwesomeIcon icon={faDesktop} size="lg" />

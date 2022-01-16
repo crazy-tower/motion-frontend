@@ -18,7 +18,6 @@ const Room: NextPage<Props> = ({ room }) => {
   const faceCanvasRef = useRef<HTMLCanvasElement>(null);
   const handCanvasRef = useRef<HTMLCanvasElement>(null);
   const [remoteStreams, setRemoteStreams] = useState<Array<MediaStream>>([]);
-  const screenVideoRef = useRef<HTMLVideoElement>(null);
   const [happyEffect, setHappyEffect] = useState<Boolean>(false);
   const faceDetectObject = new FaceDetect(localVideoRef, faceCanvasRef, room);
   const [faceMotionEnabled, setFaceMotionEnabled] = useState<boolean>(false);
@@ -59,23 +58,10 @@ const Room: NextPage<Props> = ({ room }) => {
         {remoteStreams.map((stream, i) => {
           return <RemoteVideo key={i} stream={stream} />;
         })}
-        <video
-          ref={screenVideoRef}
-          autoPlay
-          playsInline
-          muted
-          style={{
-            width: '600px',
-            height: '500px',
-            objectFit: 'cover',
-            borderRadius: '8px',
-          }}
-        />
       </div>
       {happyEffect && <FontAwesomeIcon icon={faSmileBeam} />}
       <Buttons
-        roomID={room}
-        screenVideoRef={screenVideoRef}
+        localVideoRef={localVideoRef}
         faceDetectObject={faceDetectObject}
         faceMotionEnabled={faceMotionEnabled}
         setFaceMotionEnabled={setFaceMotionEnabled}
