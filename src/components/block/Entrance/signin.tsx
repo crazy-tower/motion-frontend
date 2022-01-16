@@ -15,7 +15,7 @@ const Signin: NextPage = () => {
 
     try {
       const res = await fetch(
-        process.env.NEXT_PUBLIC_SIGNALING_SERVER + '/signin',
+        process.env.NEXT_PUBLIC_BACKEND_SERVER + '/signin',
         {
           method: 'POST',
           headers: {
