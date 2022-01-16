@@ -24,8 +24,8 @@ const LocalVideo: NextPage<Props> = ({ localVideoRef, room }) => {
         playsInline
         muted
         style={{
-          width: '500px',
-          height: '400px',
+          width: '600px',
+          height: '500px',
           objectFit: 'cover',
           borderRadius: '8px',
         }}
