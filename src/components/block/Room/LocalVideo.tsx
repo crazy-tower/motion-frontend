@@ -1,6 +1,6 @@
 import { NextPage } from 'next';
 import { RefObject, useRef } from 'react';
-// import { runFaceDetect } from '../../../utils/runFaceDetect';
+import { runFaceDetect } from '../../../utils/runFaceDetect';
 // import { runHandpose } from '../../../utils/runHandpose';
 
 type Props = {
@@ -31,7 +31,7 @@ const LocalVideo: NextPage<Props> = ({ localVideoRef, room }) => {
         }}
         onLoadedData={() => {
           // runHandpose(localVideoRef, handCanvasRef);
-          // runFaceDetect(localVideoRef, faceCanvasRef, room);
+          runFaceDetect(localVideoRef, faceCanvasRef, room);
         }}
       ></video>
       <canvas
