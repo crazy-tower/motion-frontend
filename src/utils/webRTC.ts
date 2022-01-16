@@ -241,11 +241,7 @@ const handleDisconnect = (userID: string) => {
  */
 const handleToggleCam = (): boolean => {
   const videoTrack = userStream.getVideoTracks()[0];
-  if (videoTrack.enabled) {
-    videoTrack.enabled = false;
-  } else {
-    videoTrack.enabled = true;
-  }
+  videoTrack.enabled = !videoTrack.enabled;
   return videoTrack.enabled;
 };
 
@@ -255,11 +251,7 @@ const handleToggleCam = (): boolean => {
  */
 const handleToggleAudio = (): boolean => {
   const audioTrack = userStream.getAudioTracks()[0];
-  if (audioTrack.enabled) {
-    audioTrack.enabled = false;
-  } else {
-    audioTrack.enabled = true;
-  }
+  audioTrack.enabled = !audioTrack.enabled;
   return audioTrack.enabled;
 };
 
@@ -349,7 +341,7 @@ const setupRTC = async (
   // Strat to get user media
   const localStream = await navigator.mediaDevices.getUserMedia({
     video: true,
-    audio: false,
+    audio: true,
   });
   userStream = localStream;
   localVideo.srcObject = localStream;
