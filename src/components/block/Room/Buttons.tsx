@@ -1,5 +1,6 @@
 import type { NextPage } from 'next';
-import type { RefObject } from 'react';
+import type { RefObject, Dispatch, SetStateAction } from 'react';
+import type { FaceDetect } from '../../../utils/runFaceDetect';
 import {
   CamButton,
   AudioButton,
@@ -7,13 +8,22 @@ import {
   ChatButton,
   LeaveButton,
   PeopleButton,
+  FaceMotionButton,
 } from '../../atoms/Button/index';
 
 type Props = {
   screenVideoRef: RefObject<HTMLVideoElement>;
+  faceDetectObject: FaceDetect;
+  faceMotionEnabled: boolean;
+  setFaceMotionEnabled: Dispatch<SetStateAction<boolean>>;
 };
 
-const Buttons: NextPage<Props> = ({ screenVideoRef }) => {
+const Buttons: NextPage<Props> = ({
+  screenVideoRef,
+  faceDetectObject,
+  faceMotionEnabled,
+  setFaceMotionEnabled,
+}) => {
   return (
     <div
       style={{
@@ -39,6 +49,11 @@ const Buttons: NextPage<Props> = ({ screenVideoRef }) => {
         <ChatButton />
         <PeopleButton />
         <LeaveButton />
+        <FaceMotionButton
+          faceDetectObject={faceDetectObject}
+          faceMotionEnabled={faceMotionEnabled}
+          setFaceMotionEnabled={setFaceMotionEnabled}
+        />
       </div>
     </div>
   );

@@ -1,16 +1,19 @@
 import { NextPage } from 'next';
 import { RefObject, useRef } from 'react';
-import { runFaceDetect } from '../../../utils/runFaceDetect';
 // import { runHandpose } from '../../../utils/runHandpose';
 
 type Props = {
   localVideoRef: RefObject<HTMLVideoElement>;
-  room: string;
+  faceCanvasRef: RefObject<HTMLCanvasElement>;
+  faceMotionEnabled: boolean;
 };
 
-const LocalVideo: NextPage<Props> = ({ localVideoRef, room }) => {
+const LocalVideo: NextPage<Props> = ({
+  localVideoRef,
+  faceCanvasRef,
+  faceMotionEnabled,
+}) => {
   const handCanvasRef = useRef<HTMLCanvasElement>(null);
-  const faceCanvasRef = useRef<HTMLCanvasElement>(null);
 
   return (
     <div
@@ -31,7 +34,6 @@ const LocalVideo: NextPage<Props> = ({ localVideoRef, room }) => {
         }}
         onLoadedData={() => {
           // runHandpose(localVideoRef, handCanvasRef);
-          runFaceDetect(localVideoRef, faceCanvasRef, room);
         }}
       ></video>
       <canvas
@@ -44,16 +46,18 @@ const LocalVideo: NextPage<Props> = ({ localVideoRef, room }) => {
           height: '100%',
         }}
       />
-      <canvas
-        ref={faceCanvasRef}
-        style={{
-          position: 'absolute',
-          left: 0,
-          top: 0,
-          width: '100%',
-          height: '100%',
-        }}
-      />
+      {faceMotionEnabled ? (
+        <canvas
+          ref={faceCanvasRef}
+          style={{
+            position: 'absolute',
+            left: 0,
+            top: 0,
+            width: '100%',
+            height: '100%',
+          }}
+        />
+      ) : null}
     </div>
   );
 };
