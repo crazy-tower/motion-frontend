@@ -1,28 +1,28 @@
 import type { NextPage } from 'next';
 import { FontAwesomeIcon } from '@fortawesome/react-fontawesome';
-import { faSmileWink, faSlash } from '@fortawesome/free-solid-svg-icons';
+import { faHandPeace, faSlash } from '@fortawesome/free-solid-svg-icons';
 import { Dispatch, SetStateAction } from 'react';
-import type { FaceDetect } from '../../../utils/runFaceDetect';
+import type { HandDetect } from '../../../utils/runHandpose';
 
 type Props = {
-  faceDetectObject: FaceDetect;
-  faceMotionEnabled: boolean;
-  setFaceMotionEnabled: Dispatch<SetStateAction<boolean>>;
+  handDetectObject: HandDetect;
+  handMotionEnabled: boolean;
+  setHandMotionEnabled: Dispatch<SetStateAction<boolean>>;
 };
 
-const FaceMotionButton: NextPage<Props> = ({
-  faceDetectObject,
-  faceMotionEnabled,
-  setFaceMotionEnabled,
+const HandMotionButton: NextPage<Props> = ({
+  handDetectObject,
+  handMotionEnabled,
+  setHandMotionEnabled,
 }) => {
   return (
     <button
       onClick={() => {
-        faceDetectObject.handleToggleFaceMotion(faceMotionEnabled);
-        setFaceMotionEnabled(!faceMotionEnabled);
+        handDetectObject.handleToggleHandMotion(handMotionEnabled);
+        setHandMotionEnabled(!handMotionEnabled);
       }}
     >
-      {faceMotionEnabled ? (
+      {handMotionEnabled ? (
         <div
           style={{
             display: 'flex',
@@ -35,7 +35,7 @@ const FaceMotionButton: NextPage<Props> = ({
             color: 'white',
           }}
         >
-          <FontAwesomeIcon icon={faSmileWink} size="lg" />
+          <FontAwesomeIcon icon={faHandPeace} size="lg" />
         </div>
       ) : (
         <div
@@ -51,7 +51,7 @@ const FaceMotionButton: NextPage<Props> = ({
           }}
           className="fa-layers fa-fw"
         >
-          <FontAwesomeIcon icon={faSmileWink} size="lg" />
+          <FontAwesomeIcon icon={faHandPeace} size="lg" />
           <FontAwesomeIcon icon={faSlash} size="lg" />
         </div>
       )}
@@ -59,4 +59,4 @@ const FaceMotionButton: NextPage<Props> = ({
   );
 };
 
-export default FaceMotionButton;
+export default HandMotionButton;

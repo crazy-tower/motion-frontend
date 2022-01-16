@@ -1,20 +1,21 @@
 import { NextPage } from 'next';
-import { RefObject, useRef } from 'react';
-// import { runHandpose } from '../../../utils/runHandpose';
+import { RefObject } from 'react';
 
 type Props = {
   localVideoRef: RefObject<HTMLVideoElement>;
   faceCanvasRef: RefObject<HTMLCanvasElement>;
   faceMotionEnabled: boolean;
+  handCanvasRef: RefObject<HTMLCanvasElement>;
+  handMotionEnabled: boolean;
 };
 
 const LocalVideo: NextPage<Props> = ({
   localVideoRef,
   faceCanvasRef,
   faceMotionEnabled,
+  handCanvasRef,
+  handMotionEnabled,
 }) => {
-  const handCanvasRef = useRef<HTMLCanvasElement>(null);
-
   return (
     <div
       style={{
@@ -32,20 +33,19 @@ const LocalVideo: NextPage<Props> = ({
           objectFit: 'cover',
           borderRadius: '8px',
         }}
-        onLoadedData={() => {
-          // runHandpose(localVideoRef, handCanvasRef);
-        }}
       ></video>
-      <canvas
-        ref={handCanvasRef}
-        style={{
-          position: 'absolute',
-          top: 0,
-          left: 0,
-          width: '100%',
-          height: '100%',
-        }}
-      />
+      {handMotionEnabled ? (
+        <canvas
+          ref={handCanvasRef}
+          style={{
+            position: 'absolute',
+            top: 0,
+            left: 0,
+            width: '100%',
+            height: '100%',
+          }}
+        />
+      ) : null}
       {faceMotionEnabled ? (
         <canvas
           ref={faceCanvasRef}

@@ -1,6 +1,7 @@
 import type { NextPage } from 'next';
 import type { RefObject, Dispatch, SetStateAction } from 'react';
 import type { FaceDetect } from '../../../utils/runFaceDetect';
+import type { HandDetect } from '../../../utils/runHandpose';
 import {
   CamButton,
   AudioButton,
@@ -9,6 +10,7 @@ import {
   LeaveButton,
   PeopleButton,
   FaceMotionButton,
+  HandMotionButton,
 } from '../../atoms/Button/index';
 
 type Props = {
@@ -16,6 +18,9 @@ type Props = {
   faceDetectObject: FaceDetect;
   faceMotionEnabled: boolean;
   setFaceMotionEnabled: Dispatch<SetStateAction<boolean>>;
+  handDetectObject: HandDetect;
+  handMotionEnabled: boolean;
+  setHandMotionEnabled: Dispatch<SetStateAction<boolean>>;
 };
 
 const Buttons: NextPage<Props> = ({
@@ -23,6 +28,9 @@ const Buttons: NextPage<Props> = ({
   faceDetectObject,
   faceMotionEnabled,
   setFaceMotionEnabled,
+  handDetectObject,
+  handMotionEnabled,
+  setHandMotionEnabled,
 }) => {
   return (
     <div
@@ -48,12 +56,17 @@ const Buttons: NextPage<Props> = ({
         <DesktopButton screenVideoRef={screenVideoRef} />
         <ChatButton />
         <PeopleButton />
-        <LeaveButton />
         <FaceMotionButton
           faceDetectObject={faceDetectObject}
           faceMotionEnabled={faceMotionEnabled}
           setFaceMotionEnabled={setFaceMotionEnabled}
         />
+        <HandMotionButton
+          handDetectObject={handDetectObject}
+          handMotionEnabled={handMotionEnabled}
+          setHandMotionEnabled={setHandMotionEnabled}
+        />
+        <LeaveButton />
       </div>
     </div>
   );
