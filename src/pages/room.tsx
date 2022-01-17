@@ -34,29 +34,31 @@ const Page: NextPage = () => {
 
       <Header />
 
-      <Wrapper>
-        <Heading as="h1" size="2xl" color="gray.200" marginY="3">
-          Join room
-        </Heading>
-        <Input
-          placeholder="room-name"
-          size="lg"
-          onChange={(event) => setRoom(event.target.value)}
-          width={270}
-          color="black"
-          backgroundColor="white"
-          paddingX="6"
-          paddingY="6"
-          marginY="3"
-        />
-        <Link href={`/${room}`}>
-          <a>
-            <Button colorScheme="blue" marginY={1}>
-              Join
-            </Button>
-          </a>
-        </Link>
-      </Wrapper>
+      {user && (
+        <Wrapper>
+          <Heading as="h1" size="2xl" color="gray.200" marginY="3">
+            Join room
+          </Heading>
+          <Input
+            placeholder="room-name"
+            size="lg"
+            onChange={(event) => setRoom(event.target.value)}
+            width={270}
+            color="black"
+            backgroundColor="white"
+            paddingX="6"
+            paddingY="6"
+            marginY="3"
+          />
+          <Link href={`/${room}`}>
+            <a>
+              <Button colorScheme="blue" marginY={1}>
+                Join
+              </Button>
+            </a>
+          </Link>
+        </Wrapper>
+      )}
     </>
   );
 };
