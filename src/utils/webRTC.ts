@@ -12,6 +12,7 @@ type ServerToClientEvents = {
   'user disconnected': (userID: string) => void;
   'server is full': () => void;
   'someone is laughing': () => void;
+  'chat message': (message: string) => void;
 };
 
 type ClientToServerEvents = {
@@ -21,6 +22,7 @@ type ClientToServerEvents = {
   'ice-candidate': (payload: IceCandidatePayload) => void;
   'someone is laughing': (roomID: string) => void;
   disconnecting: () => void;
+  'chat message': (roomID: string, message: string) => void;
 };
 
 type PeerConnectionRequest = {
@@ -61,6 +63,8 @@ let userStream: MediaStream;
 let remoteUserStreams = new Map<string, MediaStream>();
 let setRemoteUserStreams: Dispatch<SetStateAction<MediaStream[]>>;
 let screenStream: MediaStream;
+let chatMessages: string[] = [];
+let setChatMessages: Dispatch<SetStateAction<string[]>>;
 
 /* Functions */
 
@@ -368,6 +372,23 @@ const setupRTC = async (
   socket.on('server is full', () => alert('chat is full'));
 
   socket.on('someone is laughing', someoneLaughFunc);
+
+  socket.on('chat message', handleChatMessage);
+};
+
+/* Chat */
+
+const chatInit = (setMessages: Dispatch<SetStateAction<string[]>>) => {
+  setChatMessages = setMessages;
+};
+
+const chatMessage = (roomID: string, message: string) => {
+  socket.emit('chat message', roomID, message);
+};
+
+const handleChatMessage = (message: string) => {
+  chatMessages = chatMessages.concat(message);
+  setChatMessages(chatMessages);
 };
 
 export {
@@ -378,4 +399,6 @@ export {
   handleToggleAudio,
   hangUp,
   someoneLaugh,
+  chatInit,
+  chatMessage,
 };

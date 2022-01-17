@@ -14,10 +14,15 @@ type Props = {
 };
 
 const Room: NextPage<Props> = ({ room }) => {
+  // Local Video
   const localVideoRef = useRef<HTMLVideoElement>(null);
+
+  // Remote Video
+  const [remoteStreams, setRemoteStreams] = useState<Array<MediaStream>>([]);
+
+  // Motion
   const faceCanvasRef = useRef<HTMLCanvasElement>(null);
   const handCanvasRef = useRef<HTMLCanvasElement>(null);
-  const [remoteStreams, setRemoteStreams] = useState<Array<MediaStream>>([]);
   const [happyEffect, setHappyEffect] = useState<Boolean>(false);
   const faceDetectObject = new FaceDetect(localVideoRef, faceCanvasRef, room);
   const [faceMotionEnabled, setFaceMotionEnabled] = useState<boolean>(false);
@@ -27,12 +32,14 @@ const Room: NextPage<Props> = ({ room }) => {
   useEffect(() => {
     if (!localVideoRef.current) return;
 
-    setupRTC(room, localVideoRef.current, setRemoteStreams, () => {
+    const someoneLaughFunc = () => {
       setHappyEffect(true);
       setTimeout(() => {
         setHappyEffect(false);
       }, 3000);
-    });
+    };
+
+    setupRTC(room, localVideoRef.current, setRemoteStreams, someoneLaughFunc);
   }, [room]);
 
   return (
@@ -61,6 +68,7 @@ const Room: NextPage<Props> = ({ room }) => {
       </div>
       {happyEffect && <FontAwesomeIcon icon={faSmileBeam} />}
       <Buttons
+        roomID={room}
         localVideoRef={localVideoRef}
         faceDetectObject={faceDetectObject}
         faceMotionEnabled={faceMotionEnabled}
