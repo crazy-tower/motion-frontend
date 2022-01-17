@@ -14,6 +14,7 @@ import {
 } from '../../atoms/Button/index';
 
 type Props = {
+  roomID: string;
   localVideoRef: RefObject<HTMLVideoElement>;
   faceDetectObject: FaceDetect;
   faceMotionEnabled: boolean;
@@ -24,6 +25,7 @@ type Props = {
 };
 
 const Buttons: NextPage<Props> = ({
+  roomID,
   localVideoRef,
   faceDetectObject,
   faceMotionEnabled,
@@ -54,7 +56,7 @@ const Buttons: NextPage<Props> = ({
         <CamButton />
         <AudioButton />
         <DesktopButton localVideoRef={localVideoRef} />
-        <ChatButton />
+        <ChatButton roomID={roomID} />
         <PeopleButton />
         <FaceMotionButton
           faceDetectObject={faceDetectObject}

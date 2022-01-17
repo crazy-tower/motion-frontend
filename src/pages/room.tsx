@@ -5,7 +5,6 @@ import Link from 'next/link';
 import { useState } from 'react';
 import styled from 'styled-components';
 import useUser from '../lib/useUser';
-import Header from '../components/block/Layout/Header';
 
 const Wrapper = styled.div`
   background-color: ${(props) => props.theme.bgGreen};
@@ -24,6 +23,8 @@ const Page: NextPage = () => {
     redirectTo: '/',
   });
 
+  if (!user) return <p>Need to log in.</p>;
+
   return (
     <>
       <Head>
@@ -31,34 +32,30 @@ const Page: NextPage = () => {
         <meta name="description" content="Join room" />
         <link rel="icon" href="/favicon.ico" />
       </Head>
+      <Wrapper>
+        <Heading as="h1" size="3xl" color="gray.200" marginY="3">
+          Join room
+        </Heading>
 
-      <Header />
-
-      {user && (
-        <Wrapper>
-          <Heading as="h1" size="2xl" color="gray.200" marginY="3">
-            Join room
-          </Heading>
-          <Input
-            placeholder="room-name"
-            size="lg"
-            onChange={(event) => setRoom(event.target.value)}
-            width={270}
-            color="black"
-            backgroundColor="white"
-            paddingX="6"
-            paddingY="6"
-            marginY="3"
-          />
-          <Link href={`/${room}`}>
-            <a>
-              <Button colorScheme="blue" marginY={1}>
-                Join
-              </Button>
-            </a>
-          </Link>
-        </Wrapper>
-      )}
+        <Input
+          placeholder="room-name"
+          size="lg"
+          onChange={(event) => setRoom(event.target.value)}
+          width={270}
+          color="black"
+          backgroundColor="white"
+          paddingX="4"
+          paddingY="3"
+          marginY="3"
+        />
+        <Link href={`/${room}`}>
+          <a>
+            <Button colorScheme="blue" marginY={1}>
+              Join
+            </Button>
+          </a>
+        </Link>
+      </Wrapper>
     </>
   );
 };
