@@ -4,6 +4,8 @@ import Head from 'next/head';
 import Link from 'next/link';
 import { useState } from 'react';
 import styled from 'styled-components';
+import useUser from '../lib/useUser';
+import Header from '../components/block/Layout/Header';
 
 const Wrapper = styled.div`
   background-color: ${(props) => props.theme.bgGreen};
@@ -18,6 +20,9 @@ const Wrapper = styled.div`
 
 const Page: NextPage = () => {
   const [room, setRoom] = useState<string>();
+  const { user } = useUser({
+    redirectTo: '/',
+  });
 
   return (
     <>
@@ -27,11 +32,12 @@ const Page: NextPage = () => {
         <link rel="icon" href="/favicon.ico" />
       </Head>
 
+      <Header />
+
       <Wrapper>
         <Heading as="h1" size="2xl" color="gray.200" marginY="3">
           Join room
         </Heading>
-
         <Input
           placeholder="room-name"
           size="lg"

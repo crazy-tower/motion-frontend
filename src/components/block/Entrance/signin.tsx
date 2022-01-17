@@ -1,38 +1,43 @@
 import type { NextPage } from 'next';
 import React, { useState } from 'react';
-import { useRouter } from 'next/router';
+import useUser from '../../../lib/useUser';
 import Link from 'next/link';
+import fetchJson, { FetchError } from '../../../lib/fetchJson';
 
 const Signin: NextPage = () => {
+  const { mutateUser } = useUser({
+    redirectTo: '/room',
+    redirectIfFound: true,
+  });
   const [username, setUsername] = useState<string>('');
   const [password, setPassword] = useState<string>('');
   const [working, setWorking] = useState<boolean>(false);
 
-  const router = useRouter();
+  if (!mutateUser) {
+    return <h1>リダイレクトします</h1>;
+  }
 
   const handleSubmit = async () => {
     setWorking(true);
 
     try {
-      const res = await fetch(
-        process.env.NEXT_PUBLIC_BACKEND_SERVER + '/signin',
-        {
+      mutateUser(
+        await fetchJson('api/login', {
           method: 'POST',
           headers: {
             'Content-Type': 'application/json',
           },
           body: JSON.stringify({ username, password }),
-        }
+        })
       );
-      if (res.status == 200) {
-        router.replace('/room');
-      } else {
-        const data = await res.json();
-        alert(data.error);
-      }
-
       setUsername('');
       setPassword('');
+    } catch (error) {
+      if (error instanceof FetchError) {
+        alert(error);
+      } else {
+        alert(error);
+      }
     } finally {
       setWorking(false);
     }

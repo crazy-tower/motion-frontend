@@ -8,17 +8,29 @@ import '@fortawesome/fontawesome-svg-core/styles.css';
 import { config } from '@fortawesome/fontawesome-svg-core';
 config.autoAddCss = false;
 
+import { SWRConfig } from 'swr';
+import fetchJson from '../lib/fetchJson';
+
 const defaultTheme = {
   bgGreen: '#006654',
 };
 
 const MyApp = ({ Component, pageProps }: AppProps) => {
   return (
-    <ChakraProvider>
-      <ThemeProvider theme={defaultTheme}>
-        <Component {...pageProps} />
-      </ThemeProvider>
-    </ChakraProvider>
+    <SWRConfig
+      value={{
+        fetcher: fetchJson,
+        onError: (err) => {
+          console.error(err);
+        },
+      }}
+    >
+      <ChakraProvider>
+        <ThemeProvider theme={defaultTheme}>
+          <Component {...pageProps} />
+        </ThemeProvider>
+      </ChakraProvider>
+    </SWRConfig>
   );
 };
 
