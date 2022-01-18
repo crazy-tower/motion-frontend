@@ -51,31 +51,31 @@ class MyDocument extends Document {
           />
           <meta name="apple-mobile-web-app-title" content="Motion" />
 
-          <link rel="apple-touch-icon" href="/icons/apple-touch-icon.png" />
+          <link rel="apple-touch-icon" href="/icons/apple-touch-icon.webp" />
           {/* iPad */}
           <link
             rel="apple-touch-icon"
             sizes="152x152"
-            href="/icons/apple-touch-icon-152x152.png"
+            href="/icons/apple-touch-icon-152x152.webp"
           />
           {/* iPhone-retina */}
           <link
             rel="apple-touch-icon"
             sizes="180x180"
-            href="/icons/apple-touch-icon-180x180.png"
+            href="/icons/apple-touch-icon-180x180.webp"
           />
 
           <link
             rel="icon"
-            type="image/png"
+            type="image/webp"
             sizes="32x32"
-            href="/icons/icon-32x32.png"
+            href="/icons/icon-32x32.webp"
           />
           <link
             rel="icon"
-            type="image/png"
+            type="image/webp"
             sizes="16x16"
-            href="/icons/icon-16x16.png"
+            href="/icons/icon-16x16.webp"
           />
           <link rel="manifest" href="/manifest.json" />
           <link rel="shortcut icon" href="/icons/favicon.ico" />
