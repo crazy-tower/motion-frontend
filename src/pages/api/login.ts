@@ -20,7 +20,7 @@ async function loginRoute(req: NextApiRequest, res: NextApiResponse) {
     const error_message = await data.json();
     res.status(500).json({ message: error_message.error });
   }
-  const user = { isLoggedIn: true } as User;
+  const user = { userName: username, isLoggedIn: true } as User;
   req.session.user = user;
   await req.session.save();
   res.json(user);

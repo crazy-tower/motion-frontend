@@ -3,6 +3,7 @@ import { sessionOptions } from '../../lib/session';
 import { NextApiRequest, NextApiResponse } from 'next';
 
 export type User = {
+  userName: string;
   isLoggedIn: boolean;
 };
 
@@ -18,6 +19,7 @@ async function userRoute(req: NextApiRequest, res: NextApiResponse<User>) {
     });
   } else {
     res.json({
+      userName: '',
       isLoggedIn: false,
     });
   }
