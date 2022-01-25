@@ -58,6 +58,7 @@ const GlobalStyle = createGlobalStyle`
 
 const defaultTheme = {
   bgGreen: '#006654',
+  bgPink: '#f8dbd5',
 };
 
 const MyApp = ({ Component, pageProps }: AppProps) => {

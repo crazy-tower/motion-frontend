@@ -1,7 +1,6 @@
 import type { NextPage } from 'next';
 import Head from 'next/head';
 import Room from '../components/block/Room';
-import Header from '../components/block/Layout/Header';
 import { useRouter } from 'next/router';
 import styled from 'styled-components';
 
@@ -32,7 +31,6 @@ const Page: NextPage = () => {
         <title>Room | motion</title>
       </Head>
       <Layout>
-        <Header />
         <Wrapper>
           <Room room={room} />
         </Wrapper>
