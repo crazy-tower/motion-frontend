@@ -5,9 +5,15 @@ import Buttons from './Buttons';
 import LocalVideo from './LocalVideo';
 import RemoteVideo from './RemoteVideo';
 import { FontAwesomeIcon } from '@fortawesome/react-fontawesome';
-import { faSmileBeam } from '@fortawesome/free-solid-svg-icons';
+import {
+  faSmileBeam,
+  faAngry,
+  faSadTear,
+  faSurprise,
+} from '@fortawesome/free-solid-svg-icons';
 import { FaceDetect } from '../../../utils/runFaceDetect';
 import { HandDetect } from '../../../utils/runHandpose';
+import { motionInit } from '../../../utils/webRTC';
 
 type Props = {
   room: string;
@@ -23,7 +29,7 @@ const Room: NextPage<Props> = ({ room }) => {
   // Motion
   const faceCanvasRef = useRef<HTMLCanvasElement>(null);
   const handCanvasRef = useRef<HTMLCanvasElement>(null);
-  const [happyEffect, setHappyEffect] = useState<Boolean>(false);
+  const [motions, setMotions] = useState<string[]>([]);
   const faceDetectObject = new FaceDetect(localVideoRef, faceCanvasRef, room);
   const [faceMotionEnabled, setFaceMotionEnabled] = useState<boolean>(false);
   const handDetectObject = new HandDetect(localVideoRef, handCanvasRef);
@@ -31,19 +37,38 @@ const Room: NextPage<Props> = ({ room }) => {
 
   useEffect(() => {
     if (!localVideoRef.current) return;
-
-    const someoneLaughFunc = () => {
-      setHappyEffect(true);
-      setTimeout(() => {
-        setHappyEffect(false);
-      }, 3000);
-    };
-
-    setupRTC(room, localVideoRef.current, setRemoteStreams, someoneLaughFunc);
+    motionInit(setMotions);
+    setupRTC(room, localVideoRef.current, setRemoteStreams);
   }, [room]);
 
   return (
     <>
+      <div
+        style={{
+          height: '100%',
+          width: '100%',
+          display: 'flex',
+          flexWrap: 'wrap',
+          justifyContent: 'center',
+          columnGap: '12px',
+          rowGap: '12px',
+        }}
+      >
+        {motions.map((motion, i) => {
+          if (motion == 'happy') {
+            return <FontAwesomeIcon key={i} icon={faSmileBeam} size="lg" />;
+          }
+          if (motion == 'angry') {
+            return <FontAwesomeIcon key={i} icon={faAngry} size="lg" />;
+          }
+          if (motion == 'sad') {
+            return <FontAwesomeIcon key={i} icon={faSadTear} size="lg" />;
+          }
+          if (motion == 'surprised') {
+            return <FontAwesomeIcon key={i} icon={faSurprise} size="lg" />;
+          }
+        })}
+      </div>
       <div
         style={{
           height: '100%',
@@ -66,7 +91,6 @@ const Room: NextPage<Props> = ({ room }) => {
           return <RemoteVideo key={i} stream={stream} />;
         })}
       </div>
-      {happyEffect && <FontAwesomeIcon icon={faSmileBeam} />}
       <Buttons
         roomID={room}
         localVideoRef={localVideoRef}
