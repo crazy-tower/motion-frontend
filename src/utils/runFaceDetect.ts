@@ -1,6 +1,6 @@
 import { RefObject } from 'react';
 import * as faceapi from '@vladmandic/face-api';
-import { someoneLaugh } from './webRTC';
+import { sendMotion } from './webRTC';
 
 const thresholdHappy = 0.9;
 
@@ -91,7 +91,23 @@ class FaceDetect {
           if (
             detectionsWithExpressions['expressions']['happy'] > thresholdHappy
           ) {
-            someoneLaugh(this.room);
+            sendMotion(this.room, 'happy');
+          }
+          if (
+            detectionsWithExpressions['expressions']['angry'] > thresholdHappy
+          ) {
+            sendMotion(this.room, 'angry');
+          }
+          if (
+            detectionsWithExpressions['expressions']['sad'] > thresholdHappy
+          ) {
+            sendMotion(this.room, 'sad');
+          }
+          if (
+            detectionsWithExpressions['expressions']['surprised'] >
+            thresholdHappy
+          ) {
+            sendMotion(this.room, 'surprised');
           }
         }
       }

@@ -11,8 +11,8 @@ type ServerToClientEvents = {
   'ice-candidate': (event: ReceiveIceCandidateEvent) => void;
   'user disconnected': (userID: string) => void;
   'server is full': () => void;
-  'someone is laughing': () => void;
   'chat message': (message: string) => void;
+  'send motion': (motion: string) => void;
 };
 
 type ClientToServerEvents = {
@@ -23,6 +23,7 @@ type ClientToServerEvents = {
   'someone is laughing': (roomID: string) => void;
   disconnecting: () => void;
   'chat message': (roomID: string, message: string) => void;
+  'send motion': (roomID: string, motion: string) => void;
 };
 
 type PeerConnectionRequest = {
@@ -65,6 +66,8 @@ let setRemoteUserStreams: Dispatch<SetStateAction<MediaStream[]>>;
 let screenStream: MediaStream;
 let chatMessages: string[] = [];
 let setChatMessages: Dispatch<SetStateAction<string[]>>;
+let userMotions = new Map<number, string>();
+let setUserMotions: Dispatch<SetStateAction<string[]>>;
 
 /* Functions */
 
@@ -274,10 +277,6 @@ const hangUp = () => {
   socket.disconnect();
 };
 
-const someoneLaugh = (roomID: string) => {
-  socket.emit('someone is laughing', roomID);
-};
-
 /**
  * スクリーンシェアを始める
  * @param {HTMLVideoElement} localVideo ローカルビデオ
@@ -337,8 +336,7 @@ const stopScreenSharing = (
 const setupRTC = async (
   roomID: string,
   localVideo: HTMLVideoElement,
-  setRemoteStreams: Dispatch<SetStateAction<MediaStream[]>>,
-  someoneLaughFunc: () => void
+  setRemoteStreams: Dispatch<SetStateAction<MediaStream[]>>
 ) => {
   setRemoteUserStreams = setRemoteStreams;
 
@@ -371,7 +369,7 @@ const setupRTC = async (
 
   socket.on('server is full', () => alert('chat is full'));
 
-  socket.on('someone is laughing', someoneLaughFunc);
+  socket.on('send motion', handleUserMotion);
 
   socket.on('chat message', handleChatMessage);
 };
@@ -390,6 +388,25 @@ const handleChatMessage = (message: string) => {
   chatMessages = chatMessages.concat(message);
   setChatMessages(chatMessages);
 };
+/* User Motion */
+
+const motionInit = (setMotions: Dispatch<SetStateAction<string[]>>) => {
+  setUserMotions = setMotions;
+};
+
+const sendMotion = (roomID: string, motion: string) => {
+  socket.emit('send motion', roomID, motion);
+};
+
+const handleUserMotion = (motion: string) => {
+  let count = userMotions.size;
+  userMotions.set(count, motion);
+  setUserMotions(Array.from(userMotions.values()));
+  setTimeout(() => {
+    userMotions.delete(count);
+    setUserMotions(Array.from(userMotions.values()));
+  }, 3000);
+};
 
 export {
   setupRTC,
@@ -398,7 +415,8 @@ export {
   handleToggleCam,
   handleToggleAudio,
   hangUp,
-  someoneLaugh,
   chatInit,
   chatMessage,
+  motionInit,
+  sendMotion,
 };
