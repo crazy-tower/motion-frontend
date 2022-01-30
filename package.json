@@ -20,7 +20,7 @@
     "@emotion/styled": "^11",
     "@fortawesome/fontawesome-svg-core": "^1.2.36",
     "@fortawesome/free-solid-svg-icons": "^5.15.4",
-    "@fortawesome/react-fontawesome": "^0.1.16",
+    "@fortawesome/react-fontawesome": "^0.1.17",
     "@headlessui/react": "^1.4.3",
     "@mediapipe/hands": "^0.4.1635986972",
     "@tensorflow-models/hand-pose-detection": "^0.0.1",
@@ -43,7 +43,7 @@
     "scatter-gl": "^0.0.12",
     "socket.io-client": "^4.4.1",
     "styled-components": "^5.3.3",
-    "swr": "^1.1.2",
+    "swr": "^1.2.0",
     "webrtc-adapter": "^8.1.1"
   },
   "devDependencies": {
@@ -54,7 +54,7 @@
     "eslint-config-next": "12.0.8",
     "eslint-config-prettier": "^8.3.0",
     "husky": "^7.0.4",
-    "lint-staged": "^12.3.1",
+    "lint-staged": "^12.3.2",
     "npm-run-all": "^4.1.5",
     "prettier": "2.5.1",
     "typescript": "4.5.5"
