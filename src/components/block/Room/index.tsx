@@ -57,15 +57,14 @@ const Room: NextPage<Props> = ({ room }) => {
         {motions.map((motion, i) => {
           if (motion == 'happy') {
             return <FontAwesomeIcon key={i} icon={faSmileBeam} size="lg" />;
-          }
-          if (motion == 'angry') {
+          } else if (motion == 'angry') {
             return <FontAwesomeIcon key={i} icon={faAngry} size="lg" />;
-          }
-          if (motion == 'sad') {
+          } else if (motion == 'sad') {
             return <FontAwesomeIcon key={i} icon={faSadTear} size="lg" />;
-          }
-          if (motion == 'surprised') {
+          } else if (motion == 'surprised') {
             return <FontAwesomeIcon key={i} icon={faSurprise} size="lg" />;
+          } else {
+            return;
           }
         })}
       </div>
