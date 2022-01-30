@@ -1,7 +1,5 @@
 import { NextPage } from 'next';
 import { useEffect, useRef } from 'react';
-// import { runFaceDetect } from '../../utils/runFaceDetect';
-// import { runHandpose } from '../../utils/runHandpose';
 
 type Props = {
   stream: MediaStream;
@@ -9,8 +7,6 @@ type Props = {
 
 const RemoteVideo: NextPage<Props> = ({ stream }) => {
   const remoteVideoRef = useRef<HTMLVideoElement>(null);
-  const handCanvasRef = useRef<HTMLCanvasElement>(null);
-  const faceCanvasRef = useRef<HTMLCanvasElement>(null);
 
   useEffect(() => {
     if (remoteVideoRef.current) {
@@ -28,10 +24,6 @@ const RemoteVideo: NextPage<Props> = ({ stream }) => {
         ref={remoteVideoRef}
         autoPlay
         playsInline
-        // onLoadedData={() => {
-        //   runHandpose(remoteVideoRef, handCanvasRef);
-        //   runFaceDetect(remoteVideoRef, faceCanvasRef);
-        // }}
         style={{
           width: '600px',
           height: '500px',
@@ -39,27 +31,6 @@ const RemoteVideo: NextPage<Props> = ({ stream }) => {
           borderRadius: '8px',
         }}
       ></video>
-
-      <canvas
-        ref={handCanvasRef}
-        style={{
-          position: 'absolute',
-          left: 0,
-          top: 0,
-          width: '100%',
-          height: '100%',
-        }}
-      />
-      <canvas
-        ref={faceCanvasRef}
-        style={{
-          position: 'absolute',
-          left: 0,
-          top: 0,
-          width: '100%',
-          height: '100%',
-        }}
-      />
     </div>
   );
 };
