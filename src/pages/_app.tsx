@@ -7,8 +7,7 @@ import '@fortawesome/fontawesome-svg-core/styles.css';
 import { config } from '@fortawesome/fontawesome-svg-core';
 config.autoAddCss = false;
 
-import { SWRConfig } from 'swr';
-import fetchJson from '../lib/fetchJson';
+import { SessionProvider } from 'next-auth/react';
 
 const GlobalStyle = createGlobalStyle`
   html, body, div, span, applet, object, iframe,
@@ -61,23 +60,19 @@ const defaultTheme = {
   bgPink: '#f8dbd5',
 };
 
-const MyApp = ({ Component, pageProps }: AppProps) => {
+const MyApp = ({
+  Component,
+  pageProps: { session, ...pageProps },
+}: AppProps) => {
   return (
-    <SWRConfig
-      value={{
-        fetcher: fetchJson,
-        onError: (err) => {
-          console.error(err);
-        },
-      }}
-    >
+    <SessionProvider session={session}>
       <ChakraProvider>
         <ThemeProvider theme={defaultTheme}>
           <Component {...pageProps} />
           <GlobalStyle />
         </ThemeProvider>
       </ChakraProvider>
-    </SWRConfig>
+    </SessionProvider>
   );
 };
 
