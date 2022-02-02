@@ -3694,9 +3694,9 @@ lines-and-columns@^1.1.6:
   version "1.2.4"
   resolved "https://registry.npmjs.org/lines-and-columns/-/lines-and-columns-1.2.4.tgz"
 
-lint-staged@^12.3.2:
-  version "12.3.2"
-  resolved "https://registry.npmjs.org/lint-staged/-/lint-staged-12.3.2.tgz"
+lint-staged@^12.3.3:
+  version "12.3.3"
+  resolved "https://registry.yarnpkg.com/lint-staged/-/lint-staged-12.3.3.tgz#0a465962fe53baa2b4b9da50801ead49a910e03b"
   dependencies:
     cli-truncate "^3.1.0"
     colorette "^2.0.16"
