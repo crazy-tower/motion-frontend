@@ -24,7 +24,7 @@ const Room: NextPage<Props> = ({ room }) => {
   const handCanvasRef = useRef<HTMLCanvasElement>(null);
   const faceDetectObject = new FaceDetect(localVideoRef, faceCanvasRef, room);
   const [faceMotionEnabled, setFaceMotionEnabled] = useState<boolean>(false);
-  const handDetectObject = new HandDetect(localVideoRef, handCanvasRef);
+  const handDetectObject = new HandDetect(localVideoRef, handCanvasRef, room);
   const [handMotionEnabled, setHandMotionEnabled] = useState<boolean>(false);
 
   useEffect(() => {

@@ -6,6 +6,8 @@ import {
   faAngry,
   faSadTear,
   faSurprise,
+  faThumbsUp,
+  faHandPeace,
 } from '@fortawesome/free-solid-svg-icons';
 import { motionInit } from '../../../utils/webRTC';
 
@@ -40,6 +42,10 @@ const Motions: NextPage<Props> = () => {
             return <FontAwesomeIcon key={i} icon={faSadTear} size="lg" />;
           } else if (motion == 'surprised') {
             return <FontAwesomeIcon key={i} icon={faSurprise} size="lg" />;
+          } else if (motion == 'victory') {
+            return <FontAwesomeIcon key={i} icon={faHandPeace} size="lg" />;
+          } else if (motion == 'thumbs_up') {
+            return <FontAwesomeIcon key={i} icon={faThumbsUp} size="lg" />;
           } else {
             return;
           }
