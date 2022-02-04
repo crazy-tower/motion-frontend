@@ -1,6 +1,6 @@
 import type { NextPage } from 'next';
 import { FontAwesomeIcon } from '@fortawesome/react-fontawesome';
-import { faHandPeace, faSlash } from '@fortawesome/free-solid-svg-icons';
+import { faHandPaper, faSlash } from '@fortawesome/free-solid-svg-icons';
 import { Dispatch, SetStateAction } from 'react';
 import type { HandDetect } from '../../../utils/runHandpose';
 import Text from './Text';
@@ -36,7 +36,7 @@ const HandMotionButton: NextPage<Props> = ({
             color: 'white',
           }}
         >
-          <FontAwesomeIcon icon={faHandPeace} size="lg" />
+          <FontAwesomeIcon icon={faHandPaper} size="lg" />
         </div>
       ) : (
         <div
@@ -52,7 +52,7 @@ const HandMotionButton: NextPage<Props> = ({
           }}
           className="fa-layers fa-fw"
         >
-          <FontAwesomeIcon icon={faHandPeace} size="lg" />
+          <FontAwesomeIcon icon={faHandPaper} size="lg" />
           <FontAwesomeIcon icon={faSlash} size="lg" />
         </div>
       )}
