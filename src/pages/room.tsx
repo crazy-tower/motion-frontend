@@ -27,6 +27,13 @@ const Header = styled.div`
   align-items: center;
 `;
 
+const HeaderButton = styled.div`
+  background-color: ${(props) => props.theme.bgGreen};
+  padding: 1rem;
+  display: flex;
+  justify-content: flex-end;
+`;
+
 const Page: NextPage = () => {
   const [room, setRoom] = useState<string>();
   const router = useRouter();
@@ -44,11 +51,15 @@ const Page: NextPage = () => {
         <meta name="description" content="Join room" />
         <link rel="icon" href="/favicon.ico" />
       </Head>
+      <HeaderButton>
+        <Button onClick={() => signOut()} colorScheme="blue" marginY={1}>
+          Sign out
+        </Button>
+      </HeaderButton>
       <Header>
         <Heading as="h1" size="4xl" color="gray.200" marginY="" paddingY="10">
           Welcome {session?.user?.name}
         </Heading>
-        <button onClick={() => signOut()}>Sign out</button>
       </Header>
       <Wrapper>
         <Heading as="h1" size="3xl" color="gray.200" marginY="3">
