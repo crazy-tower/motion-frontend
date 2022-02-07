@@ -1975,9 +1975,9 @@
     "@types/mime" "^1"
     "@types/node" "*"
 
-"@types/styled-components@^5.1.21":
-  version "5.1.21"
-  resolved "https://registry.npmjs.org/@types/styled-components/-/styled-components-5.1.21.tgz"
+"@types/styled-components@^5.1.22":
+  version "5.1.22"
+  resolved "https://registry.yarnpkg.com/@types/styled-components/-/styled-components-5.1.22.tgz#ee6206582d3da11fa2f9951e858aefebee37ff20"
   dependencies:
     "@types/hoist-non-react-statics" "*"
     "@types/react" "*"
