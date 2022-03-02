@@ -4,7 +4,7 @@ jobs:
   lint:
     runs-on: ubuntu-latest
     steps:
-      - uses: actions/checkout@v2
+      - uses: actions/checkout@v3
       - name: cache node_modules
         id: node_modules_cache_id
         uses: actions/cache@v2
@@ -19,7 +19,7 @@ jobs:
   tsc:
     runs-on: ubuntu-latest
     steps:
-      - uses: actions/checkout@v2
+      - uses: actions/checkout@v3
       - name: cache node_modules
         id: node_modules_cache_id
         uses: actions/cache@v2
