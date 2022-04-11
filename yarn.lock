@@ -2026,9 +2026,9 @@
     "@typescript-eslint/types" "5.6.0"
     eslint-visitor-keys "^3.0.0"
 
-"@vladmandic/face-api@^1.6.4":
-  version "1.6.4"
-  resolved "https://registry.npmjs.org/@vladmandic/face-api/-/face-api-1.6.4.tgz"
+"@vladmandic/face-api@^1.6.7":
+  version "1.6.7"
+  resolved "https://registry.yarnpkg.com/@vladmandic/face-api/-/face-api-1.6.7.tgz#9a6ba9896ba87d637471bfd2a48d12eb675f9582"
 
 abbrev@1:
   version "1.1.1"
