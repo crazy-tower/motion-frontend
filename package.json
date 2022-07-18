@@ -50,7 +50,7 @@
     "webrtc-adapter": "^8.1.1"
   },
   "devDependencies": {
-    "@types/node": "17.0.16",
+    "@types/node": "18.0.6",
     "@types/react": "17.0.39",
     "babel-plugin-styled-components": "^2.0.2",
     "eslint": "8.7.0",
